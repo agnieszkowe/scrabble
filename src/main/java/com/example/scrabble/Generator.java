@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Generator {
     public int getTripleWord() {
@@ -40,23 +41,11 @@ public class Generator {
     final int middle = new Color(0,0,128).getRGB();
     final int casual = new Color(192,192,192).getRGB();
 
-    public Generator(Pane layer){
+
+    public ArrayList<Field> mapGenerator(Pane layer){
         int x = 0;
         int y = 0;
-//        for (int i = 0; i < 15; i++) {
-//            for (int j = 0; j < 15; j++) {
-//                if (((j == 14 || j ==0) && (i == 14 || i ==0)) || ((i == 14 || i ==0) && (j == 7)) || ((j == 14 || j ==0) && (i == 7))) {
-//                    Field field = new Field3xWordBonus(x, y, "red.jpg", layer);
-//                }else if ((j==i || i + j == 14) && ){
-//                    Field field = new Field2xWordBonus(x, y, "test.jpg", layer);
-//                } else {
-//                    Field field = new Field(x,y, "greyoyellow.jpg",layer);
-//                }
-//                x += 32;
-//            }
-//            x = 0;
-//            y += 32;
-//        }
+        ArrayList<Field> buttonArrayList = new ArrayList<Field>();
         BufferedImage img = null;
         try {
             img = ImageIO.read(new File("src/main/resources/com/example/scrabble/pixil-frame-0.png"));
@@ -67,25 +56,47 @@ public class Generator {
                 int currentPixel = img.getRGB(h, w);
 
                 if (currentPixel == tripleWord){
-                    new Field3xWordBonus(h*30,w*30,"red.jpg",layer);
+                    buttonArrayList.add(new Field3xWordBonus(h*30,w*30,"#E91E63",layer));
                 }
                 if (currentPixel == doubleWord){
-                    new Field2xWordBonus(h*30,w*30,"blue.png",layer);
+                    buttonArrayList.add(new Field2xWordBonus(h*30,w*30,"#00FFFF",layer));
                 }
                 if (currentPixel == doubleLetter){
-                    new Field3xWordBonus(h*30,w*30,"purple.png",layer);
+                    buttonArrayList.add(new Field2xLetterBonus(h*30,w*30,"#F44336",layer));
                 }
                 if (currentPixel == tripleLetter){
-                    new Field3xWordBonus(h*30,w*30,"test.jpg",layer);
+                    buttonArrayList.add(new Field3xLetterBonus(h*30,w*30,"#008000",layer));
                 }
                 if (currentPixel == middle){
-                    new Field3xWordBonus(h*30,w*30,"green.png",layer);
+                    buttonArrayList.add(new Field(h*30,w*30,"#000080",layer));
                 }
                 if (currentPixel == casual){
-                    new Field3xWordBonus(h*30,w*30,"greyoyellow.png",layer);
+                    buttonArrayList.add(new Field(h*30,w*30,"#c0c0c0",layer));
                 }
 
             }
         }
+        return buttonArrayList;
+    };
+
+    public ArrayList<LetterField> LetterFieldsGenerator(Pane layer){
+        ArrayList<LetterField> buttonArrayList = new ArrayList<LetterField>();
+        int x = 0;
+        int y = 475;
+        for (int i = 0; i < 7; i++) {
+            x+=45;
+            buttonArrayList.add(new LetterField(x,y,"#FFFF00",layer,"A"));
+        }
+        return buttonArrayList;
+
     }
+
+    public ArrayList<Letter> LetterGenerator(){
+        for (int i = 0; i < 26; i++) {
+
+        }
+    }
+
+
+
 }

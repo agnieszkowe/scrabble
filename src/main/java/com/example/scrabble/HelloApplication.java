@@ -7,16 +7,23 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
+
 public class HelloApplication extends Application {
+
+    public ArrayList<Field> fieldArrayList = new ArrayList<>();
     @Override
     public void start(Stage stage) throws IOException {
         Pane root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/hello-view.fxml")));
         stage.setScene(new Scene(root));
         stage.setTitle("Hello!");
         stage.show();
-        Generator generator = new Generator(root);
+        Generator generator = new Generator();
+        fieldArrayList = generator.mapGenerator(root);
+        generator.LetterFieldsGenerator(root);
+
     }
 
     public static void main(String[] args) {

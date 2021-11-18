@@ -1,6 +1,7 @@
 package com.example.scrabble;
 
 import javafx.geometry.Dimension2D;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -11,34 +12,27 @@ public class Field {
 
     private int letterBonus = 0;
 
-    private javafx.geometry.Dimension2D dimension;
-
     private Pane layer;
 
-    private ImageView imageView;
 
-    private Image imageStatic;
+    protected Button button;
 
     private double x;
 
     private double y;
 
-    public Field(double x, double y, String pathStatic, Pane layer) {
+    public Field(double x, double y, String color, Pane layer) {
         this.layer = layer;
-        loadImage(pathStatic);
+        //loadImage(pathStatic);
+        Button creatorButton = new Button();
+        creatorButton.setPrefSize(28,28);
+        creatorButton.setStyle("-fx-background-color:"+color);
+        setButton(creatorButton);
+
         setLocation(x, y);
-        imageStatic = new Image(String.valueOf(getClass().getResource(pathStatic)));
-        dimension = new javafx.geometry.Dimension2D(imageStatic.getWidth(), imageStatic.getHeight());
-        //addToLayer();
+        addToLayer();
     }
 
-    public Dimension2D getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(Dimension2D dimension) {
-        this.dimension = dimension;
-    }
 
     public Pane getLayer() {
         return layer;
@@ -48,21 +42,6 @@ public class Field {
         this.layer = layer;
     }
 
-    public ImageView getImageView() {
-        return imageView;
-    }
-
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
-    }
-
-    public Image getImageStatic() {
-        return imageStatic;
-    }
-
-    public void setImageStatic(Image imageStatic) {
-        this.imageStatic = imageStatic;
-    }
 
     public double getX() {
         return x;
@@ -98,22 +77,26 @@ public class Field {
     }
 
     public void addToLayer() {
-        this.layer.getChildren().add(this.imageView);
+        this.layer.getChildren().add(this.button);
     }
     public void removeFromLayer() {
-        this.layer.getChildren().remove(this.imageView);
+        this.layer.getChildren().remove(this.button);
     }
 
-    private void loadImage(String path) {
-        imageView = new ImageView(String.valueOf(getClass().getResource(path)));
-        this.imageView.relocate(this.getX(), this.getY());
-        this.addToLayer();
+    public Button getButton() {
+        return button;
     }
+
+    public void setButton(Button button) {
+        this.button = button;
+    }
+
 
     public void setLocation(double x, double y) {
         setX(x);
         setY(y);
-        imageView.relocate(x, y);
+        this.button.relocate(x, y);
+
     }
 
 }
