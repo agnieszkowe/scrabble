@@ -8,6 +8,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 
 public class Generator {
     public int getTripleWord() {
@@ -135,9 +138,19 @@ public class Generator {
             letterArrayList.add(new Letter("Q",10));
             letterArrayList.add(new Letter("Z",10));
         }
+        Collections.shuffle(letterArrayList);
         return letterArrayList;
     }
-
+    public ArrayList<Letter> PlayerLetterRandom(ArrayList<Letter> letterArrayList){
+        ArrayList<Letter> playerLetterArrayList = new ArrayList<>();
+        Random random = new Random();
+        for(int i = 0; i < 7; i++){
+            int rand = random.nextInt(letterArrayList.size());
+            playerLetterArrayList.add(letterArrayList.get(rand));
+            letterArrayList.remove(rand);
+        }
+        return playerLetterArrayList;
+    }
 
 
 }

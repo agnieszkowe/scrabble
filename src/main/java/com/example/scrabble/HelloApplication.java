@@ -14,6 +14,7 @@ import java.util.Objects;
 public class HelloApplication extends Application {
 
     public ArrayList<Field> fieldArrayList = new ArrayList<>();
+    public ArrayList<Letter> letterArrayList = new ArrayList<>();
     @Override
     public void start(Stage stage) throws IOException {
         Pane root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/hello-view.fxml")));
@@ -23,7 +24,9 @@ public class HelloApplication extends Application {
         Generator generator = new Generator();
         fieldArrayList = generator.mapGenerator(root);
         generator.LetterFieldsGenerator(root);
-
+        letterArrayList = generator.LetterGenerator();
+        ArrayList<Letter> player1LetterArrayList = generator.PlayerLetterRandom(letterArrayList);
+        ArrayList<Letter> player2LetterArrayList = generator.PlayerLetterRandom(letterArrayList);
     }
 
     public static void main(String[] args) {
