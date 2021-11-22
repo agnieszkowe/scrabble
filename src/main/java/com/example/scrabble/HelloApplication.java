@@ -11,8 +11,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.lang.reflect.Array;
+import java.util.*;
 
 
 public class HelloApplication extends Application {
@@ -21,8 +21,10 @@ public class HelloApplication extends Application {
     public ArrayList<Letter> letterArrayList = new ArrayList<>();
     public ArrayList<Player> playerArrayList = new ArrayList<>();
     public ArrayList<LetterField> letterFieldArrayList = new ArrayList<>();
+    public ArrayList<Field> playerGameFields = new ArrayList<>();
     public Player player;
     private Button giveBackWord;
+    private boolean ifFirstTurn;
     @Override
     public void start(Stage stage) throws IOException {
         Pane root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/hello-view.fxml")));
@@ -40,6 +42,7 @@ public class HelloApplication extends Application {
         playerArrayList.add(new Player("Maks",generator.PlayerLetterRandom(letterArrayList)));
         player = playerArrayList.get(0);
         setLettersOfPlayer(player.playersLetters);
+        ifFirstTurn = true;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -66,6 +69,7 @@ public class HelloApplication extends Application {
 
 
     private void nextTurnGenerator(){
+        System.out.println(checkIfWordCorrect());
         playerArrayList.remove(player);
         playerArrayList.add(player);
         this.player = playerArrayList.get(0);
@@ -78,6 +82,7 @@ public class HelloApplication extends Application {
         int counter = 0;
         for (Letter letter:letters) {
             letterFieldArrayList.get(counter).button.setText(letter.getLetter());
+            letterFieldArrayList.get(counter).setLetterPoints(letter.getValue());
             counter++;
         }
 
@@ -93,6 +98,8 @@ public class HelloApplication extends Application {
                         field.button.setDisable(true);
                         letterField.button.setDisable(true);
                         letterField.setTouched(false);
+                        field.setLetterPoints(letterField.getLetterPoints());
+                        playerGameFields.add(field);
                     }
                 }
             }
@@ -111,4 +118,65 @@ public class HelloApplication extends Application {
             }
         }
     }
+
+    private boolean checkIfWordCorrect(){
+        ArrayList<Double> xArray = new ArrayList<>();
+        ArrayList<Double> yArray = new ArrayList<>();
+        for (Field field:playerGameFields) {
+            xArray.add(field.button.getLayoutX());
+            yArray.add(field.button.getLayoutY());
+        }
+        boolean toReturnX = false;
+        boolean toReturnY = false;
+        if (30*(yArray.size()-1)+yArray.get(0)== yArray.get(yArray.size()-1)){
+            toReturnY = true;
+        }else if (30*(xArray.size()-1)+xArray.get(0)== xArray.get(xArray.size()-1)){
+            toReturnX = true;
+        }
+        if (!toReturnY && !toReturnX) {
+            return false;
+        }
+        Collections.sort(xArray);
+        Collections.sort(yArray);
+
+        double counter = 0;
+        Field[] fields = new Field[playerGameFields.size()];
+        if (!toReturnX){
+            for (Field field:playerGameFields) {
+                if (field.button.getLayoutY() == yArray.get(0)+30*counter){
+                    fields[(int) (counter)] = field;
+                }
+                counter += 1;
+            }
+
+        }else {
+            for (Field field:playerGameFields) {
+                if (field.button.getLayoutX() == xArray.get(0)+30*counter){
+                    fields[(int) (counter)] = field;
+                }
+                counter += 1;
+            }
+
+        }
+        playerGameFields.clear();
+        playerGameFields = new ArrayList<Field>(List.of(fields));
+
+
+        for (Field field:playerGameFields) {
+            Double x = field.button.getLayoutX();
+            Double y = field.button.getLayoutY();
+            if (ifFirstTurn){
+                if (x==210 && y==210){
+                    ifFirstTurn=false;
+                }
+            }
+        }
+        if (ifFirstTurn == true){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+
 }

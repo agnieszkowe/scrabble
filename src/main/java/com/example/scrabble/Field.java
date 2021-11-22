@@ -14,12 +14,16 @@ public class Field {
 
     private Pane layer;
 
-
     protected Button button;
 
     private double x;
 
     private double y;
+
+    private boolean isPermanent;
+
+    private double letterPoints;
+
 
     public Field(double x, double y, String color, Pane layer) {
         this.layer = layer;
@@ -89,6 +93,22 @@ public class Field {
 
     public void setButton(Button button) {
         this.button = button;
+    }
+
+    public boolean isPermanent() {
+        return isPermanent;
+    }
+
+    public void setPermanent(boolean permanent) {
+        isPermanent = permanent;
+    }
+
+    public double getLetterPoints() {
+        return letterPoints;
+    }
+
+    public void setLetterPoints(double letterPoints) {
+        this.letterPoints = letterPoints;
     }
 
 
