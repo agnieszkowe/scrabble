@@ -46,7 +46,7 @@ public class HelloApplication extends Application {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), e -> gameLoop()));
+                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(80), e -> gameLoop()));
                 timeline.setCycleCount(Timeline.INDEFINITE);
                 timeline.play();
                 //setTimeline(timeline);
@@ -128,16 +128,50 @@ public class HelloApplication extends Application {
         }
         boolean toReturnX = false;
         boolean toReturnY = false;
-        if (30*(yArray.size()-1)+yArray.get(0)== yArray.get(yArray.size()-1)){
-            toReturnY = true;
-        }else if (30*(xArray.size()-1)+xArray.get(0)== xArray.get(xArray.size()-1)){
-            toReturnX = true;
+        boolean toReturnVertical = false;
+        boolean toReturnHorizontal = false;
+
+        Collections.sort(xArray);
+        Collections.sort(yArray);
+
+        for (int i=0; i<xArray.size()-1; i++) {
+            if (!xArray.get(i).equals(xArray.get(i + 1))) {
+                toReturnVertical = false;
+                break;
+            }
+            toReturnVertical = true;
+        }
+        for (int i=0; i<yArray.size()-1; i++) {
+            if (!yArray.get(i).equals(yArray.get(i + 1))) {
+                toReturnHorizontal = false;
+                break;
+            }
+            toReturnHorizontal = true;
+        }
+        if (!toReturnHorizontal && ! toReturnVertical) {
+            System.out.println("Ani pion ani poziom");
+        }
+        if (toReturnHorizontal) {
+            System.out.println("poziom");
+            if (30*(xArray.size()-1)+xArray.get(0)== xArray.get(xArray.size()-1)){
+                toReturnX = true;
+                System.out.println("slowo poziome ok");
+            } else {
+                System.out.println("slowo poziome zle");
+            }
+        }
+        if (toReturnVertical) {
+            System.out.println("pion");
+            if (30*(yArray.size()-1)+yArray.get(0)== yArray.get(yArray.size()-1)){
+                toReturnY = true;
+                System.out.println("slowo pionowe ok");
+            } else {
+                System.out.println("slowo pionowe zle");
+            }
         }
         if (!toReturnY && !toReturnX) {
             return false;
         }
-        Collections.sort(xArray);
-        Collections.sort(yArray);
 
         double counter = 0;
         Field[] fields = new Field[playerGameFields.size()];
@@ -171,12 +205,11 @@ public class HelloApplication extends Application {
                 }
             }
         }
-        if (ifFirstTurn == true){
+        if (ifFirstTurn){
             return false;
         }else {
             return true;
         }
     }
-
 
 }
