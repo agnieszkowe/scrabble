@@ -10,8 +10,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.io.InputStream;
 import java.util.*;
 
 
@@ -46,7 +48,7 @@ public class HelloApplication extends Application {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(80), e -> gameLoop()));
+                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), e -> gameLoop()));
                 timeline.setCycleCount(Timeline.INDEFINITE);
                 timeline.play();
                 //setTimeline(timeline);
@@ -74,6 +76,7 @@ public class HelloApplication extends Application {
         playerArrayList.add(player);
         this.player = playerArrayList.get(0);
         setLettersOfPlayer(player.playersLetters);
+        //activateLetterFields();
 
 
     }
@@ -122,10 +125,34 @@ public class HelloApplication extends Application {
     private boolean checkIfWordCorrect(){
         ArrayList<Double> xArray = new ArrayList<>();
         ArrayList<Double> yArray = new ArrayList<>();
+        System.out.println(playerGameFields);
         for (Field field:playerGameFields) {
             xArray.add(field.button.getLayoutX());
             yArray.add(field.button.getLayoutY());
         }
+        Double maxX = Collections.max(xArray);
+        Double minX = Collections.min(xArray);
+        Double maxY = Collections.max(yArray);
+        Double minY = Collections.min(yArray);
+        /*
+        ArrayList<Field> availableX = new ArrayList<>();
+        ArrayList<Field> availableY = new ArrayList<>();
+        for (Double i = minY; i <= maxY; i+=30){
+            for(Field field : fieldArrayList ){
+                if(field.button.getLayoutY() == i && field.button.getLayoutX()==minX){
+                    availableY.add(field);
+                }
+            }
+        }
+        for (Double i = minX; i <= maxX; i+=30){
+            for(Field field : fieldArrayList ){
+                if(field.button.getLayoutX() == i && field.button.getLayoutY()==minY){
+                    availableX.add(field);
+                }
+            }
+        }
+        */
+
         boolean toReturnX = false;
         boolean toReturnY = false;
         boolean toReturnVertical = false;
@@ -156,6 +183,16 @@ public class HelloApplication extends Application {
             if (30*(xArray.size()-1)+xArray.get(0)== xArray.get(xArray.size()-1)){
                 toReturnX = true;
                 System.out.println("slowo poziome ok");
+                StringBuilder word = new StringBuilder();
+                for (double i = minX; i <= maxX; i += 30) {
+                    for(Field field : playerGameFields) {
+                        if (field.button.getLayoutX() == i){
+                            word.append(field.button.getText());
+                        }
+                    }
+                }
+                System.out.println(word);
+                checkWord(word.toString());
             } else {
                 System.out.println("slowo poziome zle");
             }
@@ -165,6 +202,16 @@ public class HelloApplication extends Application {
             if (30*(yArray.size()-1)+yArray.get(0)== yArray.get(yArray.size()-1)){
                 toReturnY = true;
                 System.out.println("slowo pionowe ok");
+                StringBuilder word = new StringBuilder();
+                for (double i = minY; i <= maxY; i += 30) {
+                    for(Field field : playerGameFields) {
+                        if (field.button.getLayoutY() == i){
+                            word.append(field.button.getText());
+                        }
+                    }
+                }
+                System.out.println(word);
+                checkWord(word.toString());
             } else {
                 System.out.println("slowo pionowe zle");
             }
@@ -177,7 +224,8 @@ public class HelloApplication extends Application {
         Field[] fields = new Field[playerGameFields.size()];
         if (!toReturnX){
             for (Field field:playerGameFields) {
-                if (field.button.getLayoutY() == yArray.get(0)+30*counter){
+                //if (field.button.getLayoutY() == yArray.get(0)+30*counter){
+                if (yArray.contains(field.button.getLayoutY())){
                     fields[(int) (counter)] = field;
                 }
                 counter += 1;
@@ -185,7 +233,8 @@ public class HelloApplication extends Application {
 
         }else {
             for (Field field:playerGameFields) {
-                if (field.button.getLayoutX() == xArray.get(0)+30*counter){
+                //if (field.button.getLayoutX() == xArray.get(0)+30*counter){
+                if (xArray.contains(field.button.getLayoutX())){
                     fields[(int) (counter)] = field;
                 }
                 counter += 1;
@@ -193,8 +242,12 @@ public class HelloApplication extends Application {
 
         }
         playerGameFields.clear();
-        playerGameFields = new ArrayList<Field>(List.of(fields));
+        playerGameFields = new ArrayList<Field>(Arrays.asList(fields));
 
+        /*for (int i = 0 ; i<fields.length; i++){
+            playerGameFields.add(fields[i]);
+            System.out.println(fields[i].button.getText());
+        }*/
 
         for (Field field:playerGameFields) {
             Double x = field.button.getLayoutX();
@@ -205,11 +258,30 @@ public class HelloApplication extends Application {
                 }
             }
         }
+        activateLetterFields();
         if (ifFirstTurn){
             return false;
         }else {
             return true;
         }
-    }
 
+    }
+    public boolean checkWord(String word){
+        try (BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/example/scrabble/dictionary.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.equals(word)){
+                    System.out.println("SUCCESS");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+    public void activateLetterFields(){
+        for (LetterField letterField:letterFieldArrayList) { // pogubiłem sie w letterfield/field/gamefield xD ale działa
+            letterField.button.setDisable(false);
+        }
+    }
 }
