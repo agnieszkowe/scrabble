@@ -71,12 +71,54 @@ public class HelloApplication extends Application {
 
 
     private void nextTurnGenerator(){
-        System.out.println(checkIfWordCorrect());
-        playerArrayList.remove(player);
-        playerArrayList.add(player);
-        this.player = playerArrayList.get(0);
-        setLettersOfPlayer(player.playersLetters);
-        //activateLetterFields();
+        if(checkIfWordCorrect()) {
+            for (Field field:playerGameFields) {
+                field.isModified = true;
+            }
+            playerGameFields.clear();
+            ArrayList<Letter>lettersToDelete = new ArrayList<>();
+            for (LetterField letterField:letterFieldArrayList) {
+                if (letterField.button.isDisable()){
+                    lettersToDelete.add(letterField.letter);
+                }
+            }
+
+            for(Letter s: lettersToDelete){
+                player.playersLetters.remove(s);
+            }
+
+            ArrayList<Integer> letterFromSackToDelete = new ArrayList<>();
+            Random random = new Random();
+            for (int i = 0; i < 7-player.playersLetters.size(); i++) {
+                if (letterArrayList.size() >= 1) {
+                    int rand = random.nextInt(letterArrayList.size());
+                    player.playersLetters.add(letterArrayList.get(rand));
+                    letterFromSackToDelete.add(rand);
+                }
+            }
+
+            for (Integer integer:letterFromSackToDelete) {
+                letterArrayList.remove(integer);
+            }
+
+            playerArrayList.remove(player);
+            playerArrayList.add(player);
+            this.player = playerArrayList.get(0);
+            setLettersOfPlayer(player.playersLetters);
+            //activateLetterFields();
+        }else {
+            System.out.println("word IS BAD");
+            for (Field field:playerGameFields) {
+                if (field.isModified == false){
+                    field.button.setText("");
+                    field.button.setDisable(false);
+                }
+            }
+            for (LetterField letterField:letterFieldArrayList) {
+                letterField.button.setDisable(false);
+            }
+            playerGameFields.clear();
+        }
 
 
     }
@@ -86,6 +128,7 @@ public class HelloApplication extends Application {
         for (Letter letter:letters) {
             letterFieldArrayList.get(counter).button.setText(letter.getLetter());
             letterFieldArrayList.get(counter).setLetterPoints(letter.getValue());
+            letterFieldArrayList.get(counter).letter = letter;
             counter++;
         }
 
@@ -191,8 +234,9 @@ public class HelloApplication extends Application {
                         }
                     }
                 }
-                System.out.println(word);
-                checkWord(word.toString());
+                if (checkWord(word.toString()) == false){
+                    return false;
+                }
             } else {
                 System.out.println("slowo poziome zle");
             }
@@ -211,7 +255,9 @@ public class HelloApplication extends Application {
                     }
                 }
                 System.out.println(word);
-                checkWord(word.toString());
+                if (checkWord(word.toString()) == false){
+                    return false;
+                }
             } else {
                 System.out.println("slowo pionowe zle");
             }
@@ -267,17 +313,18 @@ public class HelloApplication extends Application {
 
     }
     public boolean checkWord(String word){
+        boolean isWord = false;
         try (BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/example/scrabble/dictionary.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.equals(word)){
-                    System.out.println("SUCCESS");
+                    isWord = true;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return true;
+        return isWord;
     }
     public void activateLetterFields(){
         for (LetterField letterField:letterFieldArrayList) { // pogubiłem sie w letterfield/field/gamefield xD ale działa
