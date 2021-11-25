@@ -82,6 +82,7 @@ public class HelloApplication extends Application {
                     lettersToDelete.add(letterField.letter);
                 }
             }
+            activateLetterFields();
 
             for(Letter s: lettersToDelete){
                 player.playersLetters.remove(s);
@@ -114,9 +115,9 @@ public class HelloApplication extends Application {
                     field.button.setDisable(false);
                 }
             }
-            for (LetterField letterField:letterFieldArrayList) {
-                letterField.button.setDisable(false);
-            }
+//            for (LetterField letterField:letterFieldArrayList) {
+//                letterField.button.setDisable(false);
+//            }
             playerGameFields.clear();
         }
 
@@ -304,7 +305,7 @@ public class HelloApplication extends Application {
                 }
             }
         }
-        activateLetterFields();
+        //activateLetterFields();
         if (ifFirstTurn){
             return false;
         }else {
