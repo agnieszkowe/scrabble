@@ -62,7 +62,9 @@ public class HelloApplication extends Application {
             nextTurnGenerator();
         }
         setLetterFieldTouch();
+
         checkIfLetterInput();
+
     }
 
     public static void main(String[] args) {
@@ -71,56 +73,103 @@ public class HelloApplication extends Application {
 
 
     private void nextTurnGenerator(){
-        if(checkIfWordCorrect()) {
-            for (Field field:playerGameFields) {
-                field.isModified = true;
-            }
-            playerGameFields.clear();
-            ArrayList<Letter>lettersToDelete = new ArrayList<>();
-            for (LetterField letterField:letterFieldArrayList) {
-                if (letterField.button.isDisable()){
-                    lettersToDelete.add(letterField.letter);
+        if(ifFirstTurn) {
+            if (checkIfWordCorrect()) {
+                for (Field field : playerGameFields) {
+                    field.isModified = true;
                 }
-            }
-
-            for(Letter s: lettersToDelete){
-                player.playersLetters.remove(s);
-            }
-
-            ArrayList<Integer> letterFromSackToDelete = new ArrayList<>();
-            Random random = new Random();
-            for (int i = 0; i < 7-player.playersLetters.size(); i++) {
-                if (letterArrayList.size() >= 1) {
-                    int rand = random.nextInt(letterArrayList.size());
-                    player.playersLetters.add(letterArrayList.get(rand));
-                    letterFromSackToDelete.add(rand);
+                playerGameFields.clear();
+                ArrayList<Letter> lettersToDelete = new ArrayList<>();
+                for (LetterField letterField : letterFieldArrayList) {
+                    if (letterField.button.isDisable()) {
+                        lettersToDelete.add(letterField.letter);
+                    }
                 }
-            }
 
-            for (Integer integer:letterFromSackToDelete) {
-                letterArrayList.remove(integer);
-            }
-
-            playerArrayList.remove(player);
-            playerArrayList.add(player);
-            this.player = playerArrayList.get(0);
-            setLettersOfPlayer(player.playersLetters);
-            //activateLetterFields();
-        }else {
-            System.out.println("word IS BAD");
-            for (Field field:playerGameFields) {
-                if (field.isModified == false){
-                    field.button.setText("");
-                    field.button.setDisable(false);
+                for (Letter s : lettersToDelete) {
+                    player.playersLetters.remove(s);
+                    letterFieldArrayList.remove(s);
                 }
+
+                ArrayList<Integer> letterFromSackToDelete = new ArrayList<>();
+                Random random = new Random();
+                for (int i = 0; i < 7 - player.playersLetters.size(); i++) {
+                    if (letterArrayList.size() >= 1) {
+                        int rand = random.nextInt(letterArrayList.size());
+                        player.playersLetters.add(letterArrayList.get(rand));
+                        letterFromSackToDelete.add(rand);
+                    }
+                }
+
+                for (Integer integer : letterFromSackToDelete) {
+                    letterArrayList.remove(integer);
+                }
+
+                playerArrayList.remove(player);
+                playerArrayList.add(player);
+                this.player = playerArrayList.get(0);
+                setLettersOfPlayer(player.playersLetters);
+                activateLetterFields();
+            } else {
+                System.out.println("word IS BAD");
+                for (Field field : playerGameFields) {
+                    if (field.isModified == false) {
+                        field.button.setText("");
+                        field.button.setDisable(false);
+                    }
+                }
+                for (LetterField letterField : letterFieldArrayList) {
+                    letterField.button.setDisable(false);
+                }
+                playerGameFields.clear();
             }
-            for (LetterField letterField:letterFieldArrayList) {
-                letterField.button.setDisable(false);
+        } else {
+            if(checkIfWordCorrectAfter()){
+                for (Field field : playerGameFields) {
+                    field.isModified = true;
+                }
+                playerGameFields.clear();
+                ArrayList<Letter> lettersToDelete = new ArrayList<>();
+                for (LetterField letterField : letterFieldArrayList) {
+                    if (letterField.button.isDisable()) {
+                        lettersToDelete.add(letterField.letter);
+                    }
+                }
+                for (Letter s : lettersToDelete) {
+                    player.playersLetters.remove(s);
+                    letterFieldArrayList.remove(s);
+                }
+                ArrayList<Integer> letterFromSackToDelete = new ArrayList<>();
+                Random random = new Random();
+                for (int i = 0; i < 7 - player.playersLetters.size(); i++) {
+                    if (letterArrayList.size() >= 1) {
+                        int rand = random.nextInt(letterArrayList.size());
+                        player.playersLetters.add(letterArrayList.get(rand));
+                        letterFromSackToDelete.add(rand);
+                    }
+                }
+                for (Integer integer : letterFromSackToDelete) {
+                    letterArrayList.remove(integer);
+                }
+                playerArrayList.remove(player);
+                playerArrayList.add(player);
+                this.player = playerArrayList.get(0);
+                setLettersOfPlayer(player.playersLetters);
+                activateLetterFields();
+            } else {
+                System.out.println("word IS BAD");
+                for (Field field : playerGameFields) {
+                    if (field.isModified == false) {
+                        field.button.setText("");
+                        field.button.setDisable(false);
+                    }
+                }
+                for (LetterField letterField : letterFieldArrayList) {
+                    letterField.button.setDisable(false);
+                }
+                playerGameFields.clear();
             }
-            playerGameFields.clear();
         }
-
-
     }
 
     private void setLettersOfPlayer(ArrayList<Letter> letters){
@@ -164,7 +213,101 @@ public class HelloApplication extends Application {
             }
         }
     }
+    private boolean checkIfWordCorrectAfter(){
+        ArrayList<Double> xArray = new ArrayList<>();
+        ArrayList<Double> yArray = new ArrayList<>();
+        for (Field field:playerGameFields) {
+            xArray.add(field.button.getLayoutX());
+            yArray.add(field.button.getLayoutY());
+        }
+        Double maxX = Collections.max(xArray);
+        Double minX = Collections.min(xArray);
+        Double maxY = Collections.max(yArray);
+        Double minY = Collections.min(yArray);
+        ArrayList<Field> existingWord = new ArrayList<>();
 
+        boolean toReturnX = false;
+        boolean toReturnY = false;
+        boolean toReturnVertical = false;
+        boolean toReturnHorizontal = false;
+
+        Collections.sort(xArray);
+        Collections.sort(yArray);
+
+        for (int i=0; i<xArray.size()-1; i++) {
+            if (!xArray.get(i).equals(xArray.get(i + 1))) {
+                toReturnVertical = false;
+                break;
+            }
+            toReturnVertical = true;
+        }
+        for (int i=0; i<yArray.size()-1; i++) {
+            if (!yArray.get(i).equals(yArray.get(i + 1))) {
+                toReturnHorizontal = false;
+                break;
+            }
+            toReturnHorizontal = true;
+        }
+        if (!toReturnHorizontal && ! toReturnVertical) {
+            System.out.println("Ani pion ani poziom");
+        }
+        if (toReturnHorizontal) {
+            int collisions = 0; //do zaimplementowania wykrywanie kolizji
+            toReturnX = true;
+            for(Field field: fieldArrayList){
+                for(Double i = minX; i <= maxX; i+= 30){
+                    if((field.getButton().getLayoutX() == i) && (field.button.getLayoutY() == minY)){
+                        existingWord.add(field);
+                    }
+                }
+            }
+            for(Field field:fieldArrayList){
+                if((minX-30 == field.button.getLayoutX()) && (field.button.getLayoutY()==minY) && field.isModified){
+                    existingWord.add(0,field);
+                }
+            }
+            for(Field field:fieldArrayList){
+                if((maxX+30 == field.button.getLayoutX()) && (field.button.getLayoutY()==minY) && field.isModified){
+                    existingWord.add(field);
+                }
+            }
+        }
+        if (toReturnVertical) {
+            int collisions = 0; //do zaimplementowania wykrywanie kolizji
+            toReturnY = true;
+            for(Field field: fieldArrayList){
+                for(Double i = minY; i <= maxY; i+= 30){
+                    if((field.getButton().getLayoutY() == i) && (field.button.getLayoutX() == minX)){
+                        existingWord.add(field);
+                    }
+                }
+            }
+            for(Field field:fieldArrayList){
+                if((minY-30 == field.button.getLayoutY()) && (field.button.getLayoutX()==minX) && field.isModified){
+                    existingWord.add(0,field);
+                }
+            }
+            for(Field field:fieldArrayList){
+                if((maxY+30 == field.button.getLayoutY()) && (field.button.getLayoutX()==minX) && field.isModified){
+                    existingWord.add(field);
+                }
+            }
+        }
+        StringBuilder word = new StringBuilder();
+        for(Field field: existingWord) {
+            //System.out.println(field.button.getText());
+            word.append(field.button.getText());
+        }
+        if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
+            return false;
+        }
+        System.out.println(word);
+        System.out.println(playerGameFields);
+
+        //activateLetterFields();
+        return true;
+
+    }
     private boolean checkIfWordCorrect(){
         ArrayList<Double> xArray = new ArrayList<>();
         ArrayList<Double> yArray = new ArrayList<>();
@@ -177,6 +320,8 @@ public class HelloApplication extends Application {
         Double minX = Collections.min(xArray);
         Double maxY = Collections.max(yArray);
         Double minY = Collections.min(yArray);
+
+
         /*
         ArrayList<Field> availableX = new ArrayList<>();
         ArrayList<Field> availableY = new ArrayList<>();
@@ -289,7 +434,7 @@ public class HelloApplication extends Application {
         }
         playerGameFields.clear();
         playerGameFields = new ArrayList<Field>(Arrays.asList(fields));
-
+        System.out.println(playerGameFields);
         /*for (int i = 0 ; i<fields.length; i++){
             playerGameFields.add(fields[i]);
             System.out.println(fields[i].button.getText());
@@ -304,7 +449,7 @@ public class HelloApplication extends Application {
                 }
             }
         }
-        activateLetterFields();
+        //activateLetterFields();
         if (ifFirstTurn){
             return false;
         }else {
@@ -314,7 +459,7 @@ public class HelloApplication extends Application {
     }
     public boolean checkWord(String word){
         boolean isWord = false;
-        try (BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/example/scrabble/dictionary.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/com/example/scrabble/dictionary.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.equals(word)){
