@@ -254,20 +254,26 @@ public class HelloApplication extends Application {
         if (toReturnHorizontal) {
             int collisions = 0; //do zaimplementowania wykrywanie kolizji
             toReturnX = true;
-            for(Field field: fieldArrayList){
-                for(Double i = minX; i <= maxX; i+= 30){
-                    if((field.getButton().getLayoutX() == i) && (field.button.getLayoutY() == minY)){
-                        existingWord.add(field);
-                    }
-                }
-            }
-            for(Field field:fieldArrayList){
-                if((minX-30 == field.button.getLayoutX()) && (field.button.getLayoutY()==minY) && field.isModified){
+
+            for(double i = minX-30; i>=0; i -= 30){
+                Field field = getByXY(fieldArrayList,i,minY,true);
+                if (field == null){
+                    break;
+                } else {
                     existingWord.add(0,field);
                 }
             }
-            for(Field field:fieldArrayList){
-                if((maxX+30 == field.button.getLayoutX()) && (field.button.getLayoutY()==minY) && field.isModified){
+            existingWord.add(getByXYPlayerGame(playerGameFields,minX,minY));
+            for(double i = minX+30; i>=0; i += 30){
+                Field field = getByXY(fieldArrayList,i,minY,true);
+                if (field == null){
+                    Field gameField = getByXYPlayerGame(playerGameFields,i,minY);
+                    if (gameField == null) {
+                        break;
+                    } else {
+                        existingWord.add(gameField);
+                    }
+                } else {
                     existingWord.add(field);
                 }
             }
@@ -275,36 +281,38 @@ public class HelloApplication extends Application {
         if (toReturnVertical) {
             int collisions = 0; //do zaimplementowania wykrywanie kolizji
             toReturnY = true;
-            for(Field field: fieldArrayList){
-                for(Double i = minY; i <= maxY; i+= 30){
-                    if((field.getButton().getLayoutY() == i) && (field.button.getLayoutX() == minX)){
-                        existingWord.add(field);
-                    }
-                }
-            }
-            for(Field field:fieldArrayList){
-                if((minY-30 == field.button.getLayoutY()) && (field.button.getLayoutX()==minX) && field.isModified){
+            for(double i = minY-30; i>=0; i -= 30){
+                Field field = getByXY(fieldArrayList,maxX,i,true);
+                if (field == null){
+                    break;
+                } else {
                     existingWord.add(0,field);
                 }
             }
-            for(Field field:fieldArrayList){
-                if((maxY+30 == field.button.getLayoutY()) && (field.button.getLayoutX()==minX) && field.isModified){
+            existingWord.add(getByXYPlayerGame(playerGameFields,minX,minY));
+            for(double i = minY+30; i<=450; i += 30){
+                Field field = getByXY(fieldArrayList,minX,i,true);
+                if (field == null){
+                    Field gameField = getByXYPlayerGame(playerGameFields,minX,i);
+                    if (gameField == null) {
+                        break;
+                    } else {
+                        existingWord.add(gameField);
+                    }
+                } else {
                     existingWord.add(field);
                 }
             }
         }
+
         StringBuilder word = new StringBuilder();
         for(Field field: existingWord) {
-            //System.out.println(field.button.getText());
             word.append(field.button.getText());
         }
-        if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
+        /*if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
             return false;
-        }
+        }*/
         System.out.println(word);
-        System.out.println(playerGameFields);
-
-        //activateLetterFields();
         return true;
 
     }
@@ -320,26 +328,6 @@ public class HelloApplication extends Application {
         Double minX = Collections.min(xArray);
         Double maxY = Collections.max(yArray);
         Double minY = Collections.min(yArray);
-
-
-        /*
-        ArrayList<Field> availableX = new ArrayList<>();
-        ArrayList<Field> availableY = new ArrayList<>();
-        for (Double i = minY; i <= maxY; i+=30){
-            for(Field field : fieldArrayList ){
-                if(field.button.getLayoutY() == i && field.button.getLayoutX()==minX){
-                    availableY.add(field);
-                }
-            }
-        }
-        for (Double i = minX; i <= maxX; i+=30){
-            for(Field field : fieldArrayList ){
-                if(field.button.getLayoutX() == i && field.button.getLayoutY()==minY){
-                    availableX.add(field);
-                }
-            }
-        }
-        */
 
         boolean toReturnX = false;
         boolean toReturnY = false;
@@ -475,5 +463,21 @@ public class HelloApplication extends Application {
         for (LetterField letterField:letterFieldArrayList) { // pogubiłem sie w letterfield/field/gamefield xD ale działa
             letterField.button.setDisable(false);
         }
+    }
+    public Field getByXY(ArrayList<Field> list, double x, double y, boolean ismodified){
+        for(Field field : list){
+            if(field.button.getLayoutY()==y && field.button.getLayoutX()==x && field.isModified == ismodified){
+                return field;
+            }
+        }
+        return null;
+    }
+    public Field getByXYPlayerGame(ArrayList<Field> list, double x, double y){
+        for(Field field : list){
+            if(field.button.getLayoutY()==y && field.button.getLayoutX()==x){
+                return field;
+            }
+        }
+        return null;
     }
 }
