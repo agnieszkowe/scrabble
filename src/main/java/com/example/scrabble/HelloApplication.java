@@ -234,22 +234,30 @@ public class HelloApplication extends Application {
         Collections.sort(xArray);
         Collections.sort(yArray);
 
-        for (int i=0; i<xArray.size()-1; i++) {
-            if (!xArray.get(i).equals(xArray.get(i + 1))) {
-                toReturnVertical = false;
-                break;
+        if(playerGameFields.size()==1){
+            if(getByXY(fieldArrayList,minX,minY-30,true) != null || (getByXY(fieldArrayList,minX,minY+30,true)) != null){
+                toReturnVertical = true;
+            } else if(getByXY(fieldArrayList,minX-30,minY,true) != null || (getByXY(fieldArrayList,minX+30,minY,true)) != null){
+                toReturnHorizontal = true;
             }
-            toReturnVertical = true;
-        }
-        for (int i=0; i<yArray.size()-1; i++) {
-            if (!yArray.get(i).equals(yArray.get(i + 1))) {
-                toReturnHorizontal = false;
-                break;
+        } else {
+            for (int i = 0; i < xArray.size() - 1; i++) {
+                if (!xArray.get(i).equals(xArray.get(i + 1))) {
+                    toReturnVertical = false;
+                    break;
+                }
+                toReturnVertical = true;
             }
-            toReturnHorizontal = true;
-        }
-        if (!toReturnHorizontal && ! toReturnVertical) {
-            System.out.println("Ani pion ani poziom");
+            for (int i = 0; i < yArray.size() - 1; i++) {
+                if (!yArray.get(i).equals(yArray.get(i + 1))) {
+                    toReturnHorizontal = false;
+                    break;
+                }
+                toReturnHorizontal = true;
+            }
+            if (!toReturnHorizontal && !toReturnVertical) {
+                System.out.println("Ani pion ani poziom");
+            }
         }
         if (toReturnHorizontal) {
             int collisions = 0; //do zaimplementowania wykrywanie kolizji
@@ -309,9 +317,9 @@ public class HelloApplication extends Application {
         for(Field field: existingWord) {
             word.append(field.button.getText());
         }
-        /*if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
+        if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
             return false;
-        }*/
+        }
         System.out.println(word);
         return true;
 
