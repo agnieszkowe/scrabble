@@ -73,102 +73,62 @@ public class HelloApplication extends Application {
 
 
     private void nextTurnGenerator(){
-        if(ifFirstTurn) {
-            if (checkIfWordCorrect()) {
-                for (Field field : playerGameFields) {
-                    field.isModified = true;
-                }
-                playerGameFields.clear();
-                ArrayList<Letter> lettersToDelete = new ArrayList<>();
-                for (LetterField letterField : letterFieldArrayList) {
-                    if (letterField.button.isDisable()) {
-                        lettersToDelete.add(letterField.letter);
-                    }
-                }
+        if (checkIfWordCorrectAfter()) {
 
-                for (Letter s : lettersToDelete) {
-                    player.playersLetters.remove(s);
-                    letterFieldArrayList.remove(s);
-                }
-
-                ArrayList<Integer> letterFromSackToDelete = new ArrayList<>();
-                Random random = new Random();
-                for (int i = 0; i < 7 - player.playersLetters.size(); i++) {
-                    if (letterArrayList.size() >= 1) {
-                        int rand = random.nextInt(letterArrayList.size());
-                        player.playersLetters.add(letterArrayList.get(rand));
-                        letterFromSackToDelete.add(rand);
-                    }
-                }
-
-                for (Integer integer : letterFromSackToDelete) {
-                    letterArrayList.remove(integer);
-                }
-
-                playerArrayList.remove(player);
-                playerArrayList.add(player);
-                this.player = playerArrayList.get(0);
-                setLettersOfPlayer(player.playersLetters);
-                activateLetterFields();
-            } else {
-                System.out.println("word IS BAD");
-                for (Field field : playerGameFields) {
-                    if (field.isModified == false) {
-                        field.button.setText("");
-                        field.button.setDisable(false);
-                    }
-                }
-                for (LetterField letterField : letterFieldArrayList) {
-                    letterField.button.setDisable(false);
-                }
-                playerGameFields.clear();
+            for (Field field : playerGameFields) {
+                field.isModified = true;
             }
+
+            playerGameFields.clear();
+            ArrayList<Letter> lettersToDelete = new ArrayList<>();
+
+            for (LetterField letterField : letterFieldArrayList) {
+                if (letterField.button.isDisable()) {
+                    lettersToDelete.add(letterField.letter);
+                }
+            }
+
+            for (Letter s : lettersToDelete) {
+                player.playersLetters.remove(s);
+                letterFieldArrayList.remove(s);
+            }
+
+            ArrayList<Integer> letterFromSackToDelete = new ArrayList<>();
+            Random random = new Random();
+
+            for (int i = 0; i < 7 - player.playersLetters.size(); i++) {
+                if (letterArrayList.size() >= 1) {
+                    int rand = random.nextInt(letterArrayList.size());
+                    player.playersLetters.add(letterArrayList.get(rand));
+                    letterFromSackToDelete.add(rand);
+                }
+            }
+
+            for (Integer integer : letterFromSackToDelete) {
+                letterArrayList.remove(integer);
+            }
+
+            playerArrayList.remove(player);
+            playerArrayList.add(player);
+            this.player = playerArrayList.get(0);
+            setLettersOfPlayer(player.playersLetters);
+            activateLetterFields();
+
         } else {
-            if(checkIfWordCorrectAfter()){
-                for (Field field : playerGameFields) {
-                    field.isModified = true;
+            System.out.println("word IS BAD");
+
+            for (Field field : playerGameFields) {
+                if (field.isModified == false) {
+                    field.button.setText("");
+                    field.button.setDisable(false);
                 }
-                playerGameFields.clear();
-                ArrayList<Letter> lettersToDelete = new ArrayList<>();
-                for (LetterField letterField : letterFieldArrayList) {
-                    if (letterField.button.isDisable()) {
-                        lettersToDelete.add(letterField.letter);
-                    }
-                }
-                for (Letter s : lettersToDelete) {
-                    player.playersLetters.remove(s);
-                    letterFieldArrayList.remove(s);
-                }
-                ArrayList<Integer> letterFromSackToDelete = new ArrayList<>();
-                Random random = new Random();
-                for (int i = 0; i < 7 - player.playersLetters.size(); i++) {
-                    if (letterArrayList.size() >= 1) {
-                        int rand = random.nextInt(letterArrayList.size());
-                        player.playersLetters.add(letterArrayList.get(rand));
-                        letterFromSackToDelete.add(rand);
-                    }
-                }
-                for (Integer integer : letterFromSackToDelete) {
-                    letterArrayList.remove(integer);
-                }
-                playerArrayList.remove(player);
-                playerArrayList.add(player);
-                this.player = playerArrayList.get(0);
-                setLettersOfPlayer(player.playersLetters);
-                activateLetterFields();
-            } else {
-                System.out.println("word IS BAD");
-                for (Field field : playerGameFields) {
-                    if (field.isModified == false) {
-                        field.button.setText("");
-                        field.button.setDisable(false);
-                    }
-                }
-                for (LetterField letterField : letterFieldArrayList) {
-                    letterField.button.setDisable(false);
-                }
-                playerGameFields.clear();
             }
+
+            for (LetterField letterField : letterFieldArrayList) {
+                letterField.button.setDisable(false);
+            }
+
+            playerGameFields.clear();
         }
     }
 
@@ -180,7 +140,6 @@ public class HelloApplication extends Application {
             letterFieldArrayList.get(counter).letter = letter;
             counter++;
         }
-
     }
 
     private void checkIfLetterInput(){
@@ -234,6 +193,52 @@ public class HelloApplication extends Application {
         Collections.sort(xArray);
         Collections.sort(yArray);
 
+        // if first turn
+        if(ifFirstTurn){
+            for (Field field:playerGameFields) {
+                Double x = field.button.getLayoutX();
+                Double y = field.button.getLayoutY();
+                if (x==210 && y==210){
+                    ifFirstTurn=false;
+                    break;
+                }
+            }
+            if (ifFirstTurn){
+                return false;
+            }
+        } else { //if not first turn, normal procedure
+            // if word crosses other word - condition
+            int noCrossCounter = 0;
+            for (Field field : playerGameFields) {
+                double x = field.button.getLayoutX();
+                double y = field.button.getLayoutY();
+                if ((getByXY(fieldArrayList, x, y - 30, true) == null) && (getByXY(fieldArrayList, x, y + 30, true) == null) && (getByXY(fieldArrayList, x - 30, y, true) == null) && (getByXY(fieldArrayList, x + 30, y, true) == null)) {
+                    noCrossCounter++;
+                }
+            }
+            if (noCrossCounter == playerGameFields.size()) {
+                return false;
+            }
+        }
+        // Checking for collisions
+        boolean collisions = false;
+        for(Field field: playerGameFields){
+            double x = field.button.getLayoutX();
+            double y = field.button.getLayoutY();
+            if((getByXY(fieldArrayList,x,y-30,true)) != null && (getByXY(fieldArrayList,x-30,y,true) != null || getByXY(fieldArrayList,x+30,y,true) != null)){
+                collisions = true;
+            } else if ((getByXY(fieldArrayList,x,y+30,true)) != null && (getByXY(fieldArrayList,x-30,y,true) != null || getByXY(fieldArrayList,x+30,y,true) != null)){
+                collisions = true;
+            } else if ((getByXY(fieldArrayList,x-30,y,true)) != null && (getByXY(fieldArrayList,x,y-30,true) != null || getByXY(fieldArrayList,x,y+30,true) != null)) {
+                collisions = true;
+            } else if ((getByXY(fieldArrayList,x+30,y,true)) != null && (getByXY(fieldArrayList,x,y-30,true) != null || getByXY(fieldArrayList,x,y+30,true) != null)) {
+                collisions = true;
+            }
+        }
+        if (collisions){
+            return false;
+        }
+        // if 1 letter added
         if(playerGameFields.size()==1){
             if(getByXY(fieldArrayList,minX,minY-30,true) != null || (getByXY(fieldArrayList,minX,minY+30,true)) != null){
                 toReturnVertical = true;
@@ -259,10 +264,9 @@ public class HelloApplication extends Application {
                 System.out.println("Ani pion ani poziom");
             }
         }
+        // horizontal word
         if (toReturnHorizontal) {
-            int collisions = 0; //do zaimplementowania wykrywanie kolizji
             toReturnX = true;
-
             for(double i = minX-30; i>=0; i -= 30){
                 Field field = getByXY(fieldArrayList,i,minY,true);
                 if (field == null){
@@ -286,8 +290,8 @@ public class HelloApplication extends Application {
                 }
             }
         }
+        // vertical word
         if (toReturnVertical) {
-            int collisions = 0; //do zaimplementowania wykrywanie kolizji
             toReturnY = true;
             for(double i = minY-30; i>=0; i -= 30){
                 Field field = getByXY(fieldArrayList,maxX,i,true);
@@ -322,137 +326,8 @@ public class HelloApplication extends Application {
         }
         System.out.println(word);
         return true;
-
     }
-    private boolean checkIfWordCorrect(){
-        ArrayList<Double> xArray = new ArrayList<>();
-        ArrayList<Double> yArray = new ArrayList<>();
-        System.out.println(playerGameFields);
-        for (Field field:playerGameFields) {
-            xArray.add(field.button.getLayoutX());
-            yArray.add(field.button.getLayoutY());
-        }
-        Double maxX = Collections.max(xArray);
-        Double minX = Collections.min(xArray);
-        Double maxY = Collections.max(yArray);
-        Double minY = Collections.min(yArray);
 
-        boolean toReturnX = false;
-        boolean toReturnY = false;
-        boolean toReturnVertical = false;
-        boolean toReturnHorizontal = false;
-
-        Collections.sort(xArray);
-        Collections.sort(yArray);
-
-        for (int i=0; i<xArray.size()-1; i++) {
-            if (!xArray.get(i).equals(xArray.get(i + 1))) {
-                toReturnVertical = false;
-                break;
-            }
-            toReturnVertical = true;
-        }
-        for (int i=0; i<yArray.size()-1; i++) {
-            if (!yArray.get(i).equals(yArray.get(i + 1))) {
-                toReturnHorizontal = false;
-                break;
-            }
-            toReturnHorizontal = true;
-        }
-        if (!toReturnHorizontal && ! toReturnVertical) {
-            System.out.println("Ani pion ani poziom");
-        }
-        if (toReturnHorizontal) {
-            System.out.println("poziom");
-            if (30*(xArray.size()-1)+xArray.get(0)== xArray.get(xArray.size()-1)){
-                toReturnX = true;
-                System.out.println("slowo poziome ok");
-                StringBuilder word = new StringBuilder();
-                for (double i = minX; i <= maxX; i += 30) {
-                    for(Field field : playerGameFields) {
-                        if (field.button.getLayoutX() == i){
-                            word.append(field.button.getText());
-                        }
-                    }
-                }
-                if (checkWord(word.toString()) == false){
-                    return false;
-                }
-            } else {
-                System.out.println("slowo poziome zle");
-            }
-        }
-        if (toReturnVertical) {
-            System.out.println("pion");
-            if (30*(yArray.size()-1)+yArray.get(0)== yArray.get(yArray.size()-1)){
-                toReturnY = true;
-                System.out.println("slowo pionowe ok");
-                StringBuilder word = new StringBuilder();
-                for (double i = minY; i <= maxY; i += 30) {
-                    for(Field field : playerGameFields) {
-                        if (field.button.getLayoutY() == i){
-                            word.append(field.button.getText());
-                        }
-                    }
-                }
-                System.out.println(word);
-                if (checkWord(word.toString()) == false){
-                    return false;
-                }
-            } else {
-                System.out.println("slowo pionowe zle");
-            }
-        }
-        if (!toReturnY && !toReturnX) {
-            return false;
-        }
-
-        double counter = 0;
-        Field[] fields = new Field[playerGameFields.size()];
-        if (!toReturnX){
-            for (Field field:playerGameFields) {
-                //if (field.button.getLayoutY() == yArray.get(0)+30*counter){
-                if (yArray.contains(field.button.getLayoutY())){
-                    fields[(int) (counter)] = field;
-                }
-                counter += 1;
-            }
-
-        }else {
-            for (Field field:playerGameFields) {
-                //if (field.button.getLayoutX() == xArray.get(0)+30*counter){
-                if (xArray.contains(field.button.getLayoutX())){
-                    fields[(int) (counter)] = field;
-                }
-                counter += 1;
-            }
-
-        }
-        playerGameFields.clear();
-        playerGameFields = new ArrayList<Field>(Arrays.asList(fields));
-        System.out.println(playerGameFields);
-        /*for (int i = 0 ; i<fields.length; i++){
-            playerGameFields.add(fields[i]);
-            System.out.println(fields[i].button.getText());
-        }*/
-
-        for (Field field:playerGameFields) {
-            Double x = field.button.getLayoutX();
-            Double y = field.button.getLayoutY();
-            if (ifFirstTurn){
-                if (x==210 && y==210){
-                    ifFirstTurn=false;
-                }
-            }
-        }
-        //activateLetterFields();
-        if (ifFirstTurn){
-            return false;
-        }else {
-            return true;
-        }
-
-    }
     public boolean checkWord(String word){
         boolean isWord = false;
         try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/com/example/scrabble/dictionary.txt"))) {
