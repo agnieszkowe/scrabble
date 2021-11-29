@@ -6,9 +6,12 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.text.Text;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -26,6 +29,7 @@ public class HelloApplication extends Application {
     public ArrayList<Field> playerGameFields = new ArrayList<>();
     public Player player;
     private Button giveBackWord;
+    private Text playerName;
     private boolean ifFirstTurn;
     @Override
     public void start(Stage stage) throws IOException {
@@ -35,7 +39,9 @@ public class HelloApplication extends Application {
         stage.show();
         giveBackWord = new Button("Give bACK THE WORD");
         giveBackWord.relocate(600,600);
-        root.getChildren().add(giveBackWord);
+        playerName = new Text ("");
+        playerName.relocate(600, 100);
+        root.getChildren().addAll(giveBackWord, playerName);
         Generator generator = new Generator();
         fieldArrayList = generator.mapGenerator(root);
         letterFieldArrayList = generator.LetterFieldsGenerator(root);
@@ -44,6 +50,7 @@ public class HelloApplication extends Application {
         playerArrayList.add(new Player("Maks",generator.PlayerLetterRandom(letterArrayList)));
         player = playerArrayList.get(0);
         setLettersOfPlayer(player.playersLetters);
+        playerName.setText((player.getName()));
         ifFirstTurn = true;
         new Thread(new Runnable() {
             @Override
@@ -111,6 +118,7 @@ public class HelloApplication extends Application {
             playerArrayList.remove(player);
             playerArrayList.add(player);
             this.player = playerArrayList.get(0);
+            playerName.setText((player.getName()));
             setLettersOfPlayer(player.playersLetters);
             activateLetterFields();
 
@@ -173,6 +181,7 @@ public class HelloApplication extends Application {
         }
     }
     private boolean checkIfWordCorrectAfter(){
+
         ArrayList<Double> xArray = new ArrayList<>();
         ArrayList<Double> yArray = new ArrayList<>();
         for (Field field:playerGameFields) {
@@ -353,11 +362,13 @@ public class HelloApplication extends Application {
         }
         return isWord;
     }
+
     public void activateLetterFields(){
         for (LetterField letterField:letterFieldArrayList) { // pogubiłem sie w letterfield/field/gamefield xD ale działa
             letterField.button.setDisable(false);
         }
     }
+
     public Field getByXY(ArrayList<Field> list, double x, double y, boolean ismodified){
         for(Field field : list){
             if(field.button.getLayoutY()==y && field.button.getLayoutX()==x && field.isModified == ismodified){
@@ -366,6 +377,7 @@ public class HelloApplication extends Application {
         }
         return null;
     }
+
     public Field getByXYPlayerGame(ArrayList<Field> list, double x, double y){
         for(Field field : list){
             if(field.button.getLayoutY()==y && field.button.getLayoutX()==x){
@@ -374,4 +386,5 @@ public class HelloApplication extends Application {
         }
         return null;
     }
+
 }
