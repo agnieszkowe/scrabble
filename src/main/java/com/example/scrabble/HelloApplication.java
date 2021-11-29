@@ -264,6 +264,7 @@ public class HelloApplication extends Application {
                 System.out.println("Ani pion ani poziom");
             }
         }
+
         // horizontal word
         if (toReturnHorizontal) {
             toReturnX = true;
@@ -321,9 +322,19 @@ public class HelloApplication extends Application {
         for(Field field: existingWord) {
             word.append(field.button.getText());
         }
-        if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
-            return false;
+        ArrayList<String> letterArray = new ArrayList<>();
+        for(Field field : existingWord){
+            letterArray.add(field.button.getText());
         }
+        for(Field field:playerGameFields){
+            if(!letterArray.contains(field.button.getText())){
+                return false;
+            }
+        }
+
+        //if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
+        //    return false;
+       // }
         System.out.println(word);
         return true;
     }
