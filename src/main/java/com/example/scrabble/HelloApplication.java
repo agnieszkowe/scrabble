@@ -5,10 +5,10 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.text.Text;
@@ -31,6 +31,9 @@ public class HelloApplication extends Application {
     private Button giveBackWord;
     private Text playerName;
     private boolean ifFirstTurn;
+    //private TableView scoreboard;
+    private Label scoreboard;
+    private Label player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points;
     @Override
     public void start(Stage stage) throws IOException {
         Pane root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/hello-view.fxml")));
@@ -40,14 +43,28 @@ public class HelloApplication extends Application {
         giveBackWord = new Button("Give bACK THE WORD");
         giveBackWord.relocate(600,600);
         playerName = new Text ("");
-        playerName.relocate(600, 100);
-        root.getChildren().addAll(giveBackWord, playerName);
+        playerName.relocate(600, 50);
+        //scoreboard = new TableView();
+        //scoreboard.setMaxHeight(0);
+        //scoreboard.setMinHeight(0);
+        //TableColumn player1 = new TableColumn();
+        //TableColumn player2 = new TableColumn();
+        //TableColumn player3 = new TableColumn();
+        //TableColumn player4 = new TableColumn();
+        //TableColumn player1points = new TableColumn();
+        createScoreboard();
+        //scoreboard.getColumns().addAll(player1, player2, player3, player4);
+        //scoreboard.relocate(600,200);
+        //scoreboard.setPlaceholder(new Label(""));
+        //player1.getColumns().addAll(player1points);
+        root.getChildren().addAll(giveBackWord, playerName,scoreboard,player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points);
         Generator generator = new Generator();
         fieldArrayList = generator.mapGenerator(root);
         letterFieldArrayList = generator.LetterFieldsGenerator(root);
         letterArrayList = generator.LetterGenerator();
         playerArrayList.add(new Player("Aga",generator.PlayerLetterRandom(letterArrayList)));
         playerArrayList.add(new Player("Maks",generator.PlayerLetterRandom(letterArrayList)));
+        setNamesOfPlayers();
         player = playerArrayList.get(0);
         setLettersOfPlayer(player.playersLetters);
         playerName.setText((player.getName()));
@@ -229,7 +246,7 @@ public class HelloApplication extends Application {
                 return false;
             }
         }
-        // Checking for collisions
+        // Checking for collisions + between playergamefield and fieldarraylist
         boolean collisions = false;
         for(Field field: playerGameFields){
             double x = field.button.getLayoutX();
@@ -241,6 +258,14 @@ public class HelloApplication extends Application {
             } else if ((getByXY(fieldArrayList,x-30,y,true)) != null && (getByXY(fieldArrayList,x,y-30,true) != null || getByXY(fieldArrayList,x,y+30,true) != null)) {
                 collisions = true;
             } else if ((getByXY(fieldArrayList,x+30,y,true)) != null && (getByXY(fieldArrayList,x,y-30,true) != null || getByXY(fieldArrayList,x,y+30,true) != null)) {
+                collisions = true;
+            } else if ((getByXY(fieldArrayList,x+30, y, true)) != null && (getByXYPlayerGame(playerGameFields, x, y-30) != null || getByXYPlayerGame(playerGameFields,x,y+30) != null)){
+                collisions = true;
+            } else if ((getByXY(fieldArrayList,x-30, y, true)) != null && (getByXYPlayerGame(playerGameFields, x, y-30) != null || getByXYPlayerGame(playerGameFields,x,y+30) != null)){
+                collisions = true;
+            } else if ((getByXY(fieldArrayList,x, y-30, true)) != null && (getByXYPlayerGame(playerGameFields, x-30, y) != null || getByXYPlayerGame(playerGameFields,x+30,y) != null)){
+                collisions = true;
+            } else if ((getByXY(fieldArrayList,x, y+30, true)) != null && (getByXYPlayerGame(playerGameFields, x-30, y) != null || getByXYPlayerGame(playerGameFields,x+30,y) != null)){
                 collisions = true;
             }
         }
@@ -341,9 +366,47 @@ public class HelloApplication extends Application {
             }
         }
 
-        //if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
-        //    return false;
-       // }
+        if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
+            return false;
+        }
+
+        // counting points
+        int pointsFinal,points = 0;
+        int wordBonus = 1;
+        for(Field field : existingWord){
+            if (field.getWordBonus() != 1){
+                wordBonus = field.getWordBonus();
+            }
+            points += field.getLetterBonus() * field.getLetterPoints();
+        }
+        if (wordBonus == 1){
+            pointsFinal = points;
+        } else {
+            pointsFinal = points * wordBonus;
+        }
+        // updating scoreboard
+        if(player1.getText().equals(player.getName())){
+            int current_points = Integer.parseInt(player1Points.getText());
+            current_points += pointsFinal;
+            player1Points.setText(Integer.toString(current_points));
+        }
+        if(player2.getText().equals(player.getName())){
+            int current_points = Integer.parseInt(player2Points.getText());
+            current_points += pointsFinal;
+            player2Points.setText(Integer.toString(current_points));
+        }
+        if(player3.getText().equals(player.getName())){
+            int current_points = Integer.parseInt(player3Points.getText());
+            current_points += pointsFinal;
+            player3Points.setText(Integer.toString(current_points));
+        }
+        if(player4.getText().equals(player.getName())){
+            int current_points = Integer.parseInt(player4Points.getText());
+            current_points += pointsFinal;
+            player4Points.setText(Integer.toString(current_points));
+        }
+
+
         System.out.println(word);
         return true;
     }
@@ -386,5 +449,76 @@ public class HelloApplication extends Application {
         }
         return null;
     }
-
+    public void createScoreboard(){
+        Label scoreboard = new Label("Scoreboard");
+        scoreboard.relocate(600,400);
+        scoreboard.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        scoreboard.setMinWidth(300);
+        scoreboard.setMinHeight(30);
+        Label player1 = new Label("");
+        Label player2 = new Label("");
+        Label player3 = new Label("");
+        Label player4 = new Label("");
+        player1.relocate(600,430);
+        player1.setMinWidth(75);
+        player1.setMinHeight(30);
+        player1.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        player2.relocate(675,430);
+        player2.setMinWidth(75);
+        player2.setMinHeight(30);
+        player2.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        player3.relocate(750,430);
+        player3.setMinWidth(75);
+        player3.setMinHeight(30);
+        player3.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        player4.relocate(825,430);
+        player4.setMinWidth(75);
+        player4.setMinHeight(30);
+        player4.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        Label player1Points = new Label("0");
+        Label player2Points = new Label("0");
+        Label player3Points = new Label("0");
+        Label player4Points = new Label("0");
+        player1Points.relocate(600,460);
+        player1Points.setMinWidth(75);
+        player1Points.setMinHeight(30);
+        player1Points.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        player2Points.relocate(675,460);
+        player2Points.setMinWidth(75);
+        player2Points.setMinHeight(30);
+        player2Points.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        player3Points.relocate(750,460);
+        player3Points.setMinWidth(75);
+        player3Points.setMinHeight(30);
+        player3Points.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        player4Points.relocate(825,460);
+        player4Points.setMinWidth(75);
+        player4Points.setMinHeight(30);
+        player4Points.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        this.scoreboard = scoreboard;
+        this.player1=player1;
+        this.player1Points = player1Points;
+        this.player2 = player2;
+        this.player2Points = player2Points;
+        this.player3 = player3;
+        this.player3Points = player3Points;
+        this.player4 = player4;
+        this.player4Points = player4Points;
+    }
+    public void setNamesOfPlayers(){
+        int length = playerArrayList.size();
+        if(length == 2) {
+            player1.setText(playerArrayList.get(0).getName());
+            player2.setText(playerArrayList.get(1).getName());
+        } else if (length == 3){
+            player1.setText(playerArrayList.get(0).getName());
+            player2.setText(playerArrayList.get(1).getName());
+            player3.setText(playerArrayList.get(2).getName());
+        } else if (length == 4){
+            player1.setText(playerArrayList.get(0).getName());
+            player2.setText(playerArrayList.get(1).getName());
+            player3.setText(playerArrayList.get(2).getName());
+            player4.setText(playerArrayList.get(3).getName());
+        }
+    }
 }
