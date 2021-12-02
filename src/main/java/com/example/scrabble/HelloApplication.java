@@ -89,6 +89,8 @@ public class HelloApplication extends Application {
 
         checkIfLetterInput();
 
+        System.out.println(letterArrayList.size());
+
     }
 
     public static void main(String[] args) {
@@ -114,23 +116,20 @@ public class HelloApplication extends Application {
 
             for (Letter s : lettersToDelete) {
                 player.playersLetters.remove(s);
-                letterFieldArrayList.remove(s);
+                //letterFieldArrayList.remove(s);
             }
 
             ArrayList<Integer> letterFromSackToDelete = new ArrayList<>();
             Random random = new Random();
-
-            for (int i = 0; i < 7 - player.playersLetters.size(); i++) {
+            Integer NoLeftPlayersLetters = player.playersLetters.size();
+            for (int i = 0; i < 7 - NoLeftPlayersLetters; i++) {
                 if (letterArrayList.size() >= 1) {
                     int rand = random.nextInt(letterArrayList.size());
                     player.playersLetters.add(letterArrayList.get(rand));
-                    letterFromSackToDelete.add(rand);
+                    letterArrayList.remove(rand);
                 }
             }
 
-            for (Integer integer : letterFromSackToDelete) {
-                letterArrayList.remove(integer);
-            }
 
             playerArrayList.remove(player);
             playerArrayList.add(player);
@@ -366,9 +365,9 @@ public class HelloApplication extends Application {
             }
         }
 
-        if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
-            return false;
-        }
+//        if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
+//            return false;
+//        }
 
         // counting points
         int pointsFinal,points = 0;
