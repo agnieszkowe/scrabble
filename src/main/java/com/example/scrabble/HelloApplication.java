@@ -29,7 +29,7 @@ public class HelloApplication extends Application {
     public ArrayList<Field> playerGameFields = new ArrayList<>();
     public Player player;
     private Button giveBackWord;
-    private Text playerName;
+    private Label playerName;
     private boolean ifFirstTurn;
     //private TableView scoreboard;
     private Label scoreboard;
@@ -40,10 +40,12 @@ public class HelloApplication extends Application {
         stage.setScene(new Scene(root));
         stage.setTitle("Hello!");
         stage.show();
-        giveBackWord = new Button("Give bACK THE WORD");
-        giveBackWord.relocate(600,600);
-        playerName = new Text ("");
-        playerName.relocate(600, 50);
+        giveBackWord = new Button("Give back the word");
+        giveBackWord.relocate(535,310);
+        playerName = new Label();
+        playerName.setText("");
+        playerName.relocate(630, 138);
+        playerName.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
         //scoreboard = new TableView();
         //scoreboard.setMaxHeight(0);
         //scoreboard.setMinHeight(0);
@@ -449,51 +451,53 @@ public class HelloApplication extends Application {
         return null;
     }
     public void createScoreboard(){
+        int mine = -188;
+        int minex = 6;
         Label scoreboard = new Label("Scoreboard");
-        scoreboard.relocate(600,400);
-        scoreboard.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        scoreboard.relocate(600+minex,400+mine);
+        scoreboard.setStyle("-fx-border-color:grey; -fx-background-color: #babfbb; -fx-alignment: center");
         scoreboard.setMinWidth(300);
         scoreboard.setMinHeight(30);
         Label player1 = new Label("");
         Label player2 = new Label("");
         Label player3 = new Label("");
         Label player4 = new Label("");
-        player1.relocate(600,430);
+        player1.relocate(600+minex,430+mine);
         player1.setMinWidth(75);
         player1.setMinHeight(30);
-        player1.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
-        player2.relocate(675,430);
+        player1.setStyle("-fx-border-color:grey; -fx-background-color: #babfbb; -fx-alignment: center");
+        player2.relocate(675+minex,430+mine);
         player2.setMinWidth(75);
         player2.setMinHeight(30);
-        player2.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
-        player3.relocate(750,430);
+        player2.setStyle("-fx-border-color:grey; -fx-background-color: #babfbb; -fx-alignment: center");
+        player3.relocate(750+minex,430+mine);
         player3.setMinWidth(75);
         player3.setMinHeight(30);
-        player3.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
-        player4.relocate(825,430);
+        player3.setStyle("-fx-border-color:grey; -fx-background-color: #babfbb; -fx-alignment: center");
+        player4.relocate(825+minex,430+mine);
         player4.setMinWidth(75);
         player4.setMinHeight(30);
-        player4.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        player4.setStyle("-fx-border-color:grey; -fx-background-color: #babfbb; -fx-alignment: center");
         Label player1Points = new Label("0");
         Label player2Points = new Label("0");
         Label player3Points = new Label("0");
         Label player4Points = new Label("0");
-        player1Points.relocate(600,460);
+        player1Points.relocate(600+minex,460+mine);
         player1Points.setMinWidth(75);
         player1Points.setMinHeight(30);
-        player1Points.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
-        player2Points.relocate(675,460);
+        player1Points.setStyle("-fx-border-color:grey; -fx-background-color: #babfbb; -fx-alignment: center");
+        player2Points.relocate(675+minex,460+mine);
         player2Points.setMinWidth(75);
         player2Points.setMinHeight(30);
-        player2Points.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
-        player3Points.relocate(750,460);
+        player2Points.setStyle("-fx-border-color:grey; -fx-background-color: #babfbb; -fx-alignment: center");
+        player3Points.relocate(750+minex,460+mine);
         player3Points.setMinWidth(75);
         player3Points.setMinHeight(30);
-        player3Points.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
-        player4Points.relocate(825,460);
+        player3Points.setStyle("-fx-border-color:grey; -fx-background-color: #babfbb; -fx-alignment: center");
+        player4Points.relocate(825+minex,460+mine);
         player4Points.setMinWidth(75);
         player4Points.setMinHeight(30);
-        player4Points.setStyle("-fx-border-color:black; -fx-background-color: #babfbb; -fx-alignment: center");
+        player4Points.setStyle("-fx-border-color:grey; -fx-background-color: #babfbb; -fx-alignment: center");
         this.scoreboard = scoreboard;
         this.player1=player1;
         this.player1Points = player1Points;
@@ -504,6 +508,7 @@ public class HelloApplication extends Application {
         this.player4 = player4;
         this.player4Points = player4Points;
     }
+
     public void setNamesOfPlayers(){
         int length = playerArrayList.size();
         if(length == 2) {

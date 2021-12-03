@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Random;
 
 public class Generator {
+
     public int getTripleWord() {
         return tripleWord;
     }
@@ -105,7 +106,7 @@ public class Generator {
         }
         for (int i = 0; i < 8; i++) {
             letterArrayList.add(new Letter("O",1));
-        }
+        }/*
 //        for (int i = 0; i < 6; i++) {
 //            letterArrayList.add(new Letter("N",1));
 //            letterArrayList.add(new Letter("R",1));
@@ -137,7 +138,7 @@ public class Generator {
 //            letterArrayList.add(new Letter("X",8));
 //            letterArrayList.add(new Letter("Q",10));
 //            letterArrayList.add(new Letter("Z",10));
-//        }
+//        }*/
         Collections.shuffle(letterArrayList);
         return letterArrayList;
     }
