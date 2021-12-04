@@ -84,15 +84,21 @@ public class HelloApplication extends Application {
 
     private void gameLoop() {
         //System.out.println("siema");
-        if (this.giveBackWord.isPressed()){
-            nextTurnGenerator();
+        if(player.playersLetters.size() == 0){
+            passTurn();
         }
-        setLetterFieldTouch();
+        if(checkIfOutOfLetters()){ // returns true if all of players doesnt have any letters
+            //end game loop, show results
+        } else {
+            if (this.giveBackWord.isPressed()) {
+                nextTurnGenerator();
+            }
+            setLetterFieldTouch();
 
-        checkIfLetterInput();
+            checkIfLetterInput();
 
-        System.out.println(letterArrayList.size());
-
+            //System.out.println(letterArrayList.size());
+        }
     }
 
     public static void main(String[] args) {
@@ -111,7 +117,7 @@ public class HelloApplication extends Application {
             ArrayList<Letter> lettersToDelete = new ArrayList<>();
 
             for (LetterField letterField : letterFieldArrayList) {
-                if (letterField.button.isDisable()) {
+                if (letterField.button.isDisable() && !letterField.button.getText().equals("")) {
                     lettersToDelete.add(letterField.letter);
                 }
             }
@@ -129,6 +135,12 @@ public class HelloApplication extends Application {
                     int rand = random.nextInt(letterArrayList.size());
                     player.playersLetters.add(letterArrayList.get(rand));
                     letterArrayList.remove(rand);
+                } else {
+                    for (Field field : letterFieldArrayList){
+                        if (field.button.isDisable()){
+                            field.button.setText("");
+                        }
+                    }
                 }
             }
 
@@ -137,7 +149,7 @@ public class HelloApplication extends Application {
             playerArrayList.add(player);
             this.player = playerArrayList.get(0);
             playerName.setText((player.getName()));
-            setLettersOfPlayer(player.playersLetters);
+            setLettersOfPlayer(this.player.playersLetters);
             activateLetterFields();
 
         } else {
@@ -199,219 +211,245 @@ public class HelloApplication extends Application {
         }
     }
     private boolean checkIfWordCorrectAfter(){
+        if(playerGameFields.size()==0){
+            return false;
+        } else {
 
-        ArrayList<Double> xArray = new ArrayList<>();
-        ArrayList<Double> yArray = new ArrayList<>();
-        for (Field field:playerGameFields) {
-            xArray.add(field.button.getLayoutX());
-            yArray.add(field.button.getLayoutY());
-        }
-        Double maxX = Collections.max(xArray);
-        Double minX = Collections.min(xArray);
-        Double maxY = Collections.max(yArray);
-        Double minY = Collections.min(yArray);
-        ArrayList<Field> existingWord = new ArrayList<>();
+            ArrayList<Double> xArray = new ArrayList<>();
+            ArrayList<Double> yArray = new ArrayList<>();
+            for (Field field : playerGameFields) {
+                xArray.add(field.button.getLayoutX());
+                yArray.add(field.button.getLayoutY());
+            }
+            Double maxX = Collections.max(xArray);
+            Double minX = Collections.min(xArray);
+            Double maxY = Collections.max(yArray);
+            Double minY = Collections.min(yArray);
+            ArrayList<Field> existingWord = new ArrayList<>();
 
-        boolean toReturnX = false;
-        boolean toReturnY = false;
-        boolean toReturnVertical = false;
-        boolean toReturnHorizontal = false;
+            boolean toReturnX = false;
+            boolean toReturnY = false;
+            boolean toReturnVertical = false;
+            boolean toReturnHorizontal = false;
 
-        Collections.sort(xArray);
-        Collections.sort(yArray);
+            Collections.sort(xArray);
+            Collections.sort(yArray);
 
-        // if first turn
-        if(ifFirstTurn){
-            for (Field field:playerGameFields) {
-                Double x = field.button.getLayoutX();
-                Double y = field.button.getLayoutY();
-                if (x==210 && y==210){
-                    ifFirstTurn=false;
-                    break;
+            // if first turn
+            if (ifFirstTurn) {
+                for (Field field : playerGameFields) {
+                    Double x = field.button.getLayoutX();
+                    Double y = field.button.getLayoutY();
+                    if (x == 210 && y == 210) {
+                        ifFirstTurn = false;
+                        break;
+                    }
+                }
+                if (ifFirstTurn) {
+                    return false;
+                }
+            } else { //if not first turn, normal procedure
+                // if word crosses other word - condition
+                int noCrossCounter = 0;
+                for (Field field : playerGameFields) {
+                    double x = field.button.getLayoutX();
+                    double y = field.button.getLayoutY();
+                    if ((getByXY(fieldArrayList, x, y - 30, true) == null) && (getByXY(fieldArrayList, x, y + 30, true) == null) && (getByXY(fieldArrayList, x - 30, y, true) == null) && (getByXY(fieldArrayList, x + 30, y, true) == null)) {
+                        noCrossCounter++;
+                    }
+                }
+                if (noCrossCounter == playerGameFields.size()) {
+                    return false;
                 }
             }
-            if (ifFirstTurn){
-                return false;
-            }
-        } else { //if not first turn, normal procedure
-            // if word crosses other word - condition
-            int noCrossCounter = 0;
+            // Checking for collisions + between playergamefield and fieldarraylist
+            boolean collisions = false;
             for (Field field : playerGameFields) {
                 double x = field.button.getLayoutX();
                 double y = field.button.getLayoutY();
-                if ((getByXY(fieldArrayList, x, y - 30, true) == null) && (getByXY(fieldArrayList, x, y + 30, true) == null) && (getByXY(fieldArrayList, x - 30, y, true) == null) && (getByXY(fieldArrayList, x + 30, y, true) == null)) {
-                    noCrossCounter++;
+                if ((getByXY(fieldArrayList, x, y - 30, true)) != null && (getByXY(fieldArrayList, x - 30, y, true) != null || getByXY(fieldArrayList, x + 30, y, true) != null)) {
+                    collisions = true;
+                } else if ((getByXY(fieldArrayList, x, y + 30, true)) != null && (getByXY(fieldArrayList, x - 30, y, true) != null || getByXY(fieldArrayList, x + 30, y, true) != null)) {
+                    collisions = true;
+                } else if ((getByXY(fieldArrayList, x - 30, y, true)) != null && (getByXY(fieldArrayList, x, y - 30, true) != null || getByXY(fieldArrayList, x, y + 30, true) != null)) {
+                    collisions = true;
+                } else if ((getByXY(fieldArrayList, x + 30, y, true)) != null && (getByXY(fieldArrayList, x, y - 30, true) != null || getByXY(fieldArrayList, x, y + 30, true) != null)) {
+                    collisions = true;
+                } else if ((getByXY(fieldArrayList, x + 30, y, true)) != null && (getByXYPlayerGame(playerGameFields, x, y - 30) != null || getByXYPlayerGame(playerGameFields, x, y + 30) != null)) {
+                    collisions = true;
+                } else if ((getByXY(fieldArrayList, x - 30, y, true)) != null && (getByXYPlayerGame(playerGameFields, x, y - 30) != null || getByXYPlayerGame(playerGameFields, x, y + 30) != null)) {
+                    collisions = true;
+                } else if ((getByXY(fieldArrayList, x, y - 30, true)) != null && (getByXYPlayerGame(playerGameFields, x - 30, y) != null || getByXYPlayerGame(playerGameFields, x + 30, y) != null)) {
+                    collisions = true;
+                } else if ((getByXY(fieldArrayList, x, y + 30, true)) != null && (getByXYPlayerGame(playerGameFields, x - 30, y) != null || getByXYPlayerGame(playerGameFields, x + 30, y) != null)) {
+                    collisions = true;
                 }
             }
-            if (noCrossCounter == playerGameFields.size()) {
+            if (collisions) {
                 return false;
             }
-        }
-        // Checking for collisions + between playergamefield and fieldarraylist
-        boolean collisions = false;
-        for(Field field: playerGameFields){
-            double x = field.button.getLayoutX();
-            double y = field.button.getLayoutY();
-            if((getByXY(fieldArrayList,x,y-30,true)) != null && (getByXY(fieldArrayList,x-30,y,true) != null || getByXY(fieldArrayList,x+30,y,true) != null)){
-                collisions = true;
-            } else if ((getByXY(fieldArrayList,x,y+30,true)) != null && (getByXY(fieldArrayList,x-30,y,true) != null || getByXY(fieldArrayList,x+30,y,true) != null)){
-                collisions = true;
-            } else if ((getByXY(fieldArrayList,x-30,y,true)) != null && (getByXY(fieldArrayList,x,y-30,true) != null || getByXY(fieldArrayList,x,y+30,true) != null)) {
-                collisions = true;
-            } else if ((getByXY(fieldArrayList,x+30,y,true)) != null && (getByXY(fieldArrayList,x,y-30,true) != null || getByXY(fieldArrayList,x,y+30,true) != null)) {
-                collisions = true;
-            } else if ((getByXY(fieldArrayList,x+30, y, true)) != null && (getByXYPlayerGame(playerGameFields, x, y-30) != null || getByXYPlayerGame(playerGameFields,x,y+30) != null)){
-                collisions = true;
-            } else if ((getByXY(fieldArrayList,x-30, y, true)) != null && (getByXYPlayerGame(playerGameFields, x, y-30) != null || getByXYPlayerGame(playerGameFields,x,y+30) != null)){
-                collisions = true;
-            } else if ((getByXY(fieldArrayList,x, y-30, true)) != null && (getByXYPlayerGame(playerGameFields, x-30, y) != null || getByXYPlayerGame(playerGameFields,x+30,y) != null)){
-                collisions = true;
-            } else if ((getByXY(fieldArrayList,x, y+30, true)) != null && (getByXYPlayerGame(playerGameFields, x-30, y) != null || getByXYPlayerGame(playerGameFields,x+30,y) != null)){
-                collisions = true;
-            }
-        }
-        if (collisions){
-            return false;
-        }
-        // if 1 letter added
-        if(playerGameFields.size()==1){
-            if(getByXY(fieldArrayList,minX,minY-30,true) != null || (getByXY(fieldArrayList,minX,minY+30,true)) != null){
-                toReturnVertical = true;
-            } else if(getByXY(fieldArrayList,minX-30,minY,true) != null || (getByXY(fieldArrayList,minX+30,minY,true)) != null){
-                toReturnHorizontal = true;
-            }
-        } else {
-            for (int i = 0; i < xArray.size() - 1; i++) {
-                if (!xArray.get(i).equals(xArray.get(i + 1))) {
-                    toReturnVertical = false;
-                    break;
+            // if 1 letter added
+            if (playerGameFields.size() == 1) {
+                if (getByXY(fieldArrayList, minX, minY - 30, true) != null || (getByXY(fieldArrayList, minX, minY + 30, true)) != null) {
+                    toReturnVertical = true;
+                } else if (getByXY(fieldArrayList, minX - 30, minY, true) != null || (getByXY(fieldArrayList, minX + 30, minY, true)) != null) {
+                    toReturnHorizontal = true;
                 }
-                toReturnVertical = true;
-            }
-            for (int i = 0; i < yArray.size() - 1; i++) {
-                if (!yArray.get(i).equals(yArray.get(i + 1))) {
-                    toReturnHorizontal = false;
-                    break;
+            } else {
+                for (int i = 0; i < xArray.size() - 1; i++) {
+                    if (!xArray.get(i).equals(xArray.get(i + 1))) {
+                        toReturnVertical = false;
+                        break;
+                    }
+                    toReturnVertical = true;
                 }
-                toReturnHorizontal = true;
+                for (int i = 0; i < yArray.size() - 1; i++) {
+                    if (!yArray.get(i).equals(yArray.get(i + 1))) {
+                        toReturnHorizontal = false;
+                        break;
+                    }
+                    toReturnHorizontal = true;
+                }
+                if (!toReturnHorizontal && !toReturnVertical) {
+                    System.out.println("Ani pion ani poziom");
+                }
             }
-            if (!toReturnHorizontal && !toReturnVertical) {
-                System.out.println("Ani pion ani poziom");
-            }
-        }
 
-        // horizontal word
-        if (toReturnHorizontal) {
-            toReturnX = true;
-            for(double i = minX-30; i>=0; i -= 30){
-                Field field = getByXY(fieldArrayList,i,minY,true);
-                if (field == null){
-                    break;
-                } else {
-                    existingWord.add(0,field);
-                }
-            }
-            existingWord.add(getByXYPlayerGame(playerGameFields,minX,minY));
-            for(double i = minX+30; i>=0; i += 30){
-                Field field = getByXY(fieldArrayList,i,minY,true);
-                if (field == null){
-                    Field gameField = getByXYPlayerGame(playerGameFields,i,minY);
-                    if (gameField == null) {
+            // horizontal word
+            if (toReturnHorizontal) {
+                toReturnX = true;
+                for (double i = minX - 30; i >= 0; i -= 30) {
+                    Field field = getByXY(fieldArrayList, i, minY, true);
+                    if (field == null) {
                         break;
                     } else {
-                        existingWord.add(gameField);
+                        existingWord.add(0, field);
                     }
-                } else {
-                    existingWord.add(field);
+                }
+                existingWord.add(getByXYPlayerGame(playerGameFields, minX, minY));
+                for (double i = minX + 30; i >= 0; i += 30) {
+                    Field field = getByXY(fieldArrayList, i, minY, true);
+                    if (field == null) {
+                        Field gameField = getByXYPlayerGame(playerGameFields, i, minY);
+                        if (gameField == null) {
+                            break;
+                        } else {
+                            existingWord.add(gameField);
+                        }
+                    } else {
+                        existingWord.add(field);
+                    }
                 }
             }
-        }
-        // vertical word
-        if (toReturnVertical) {
-            toReturnY = true;
-            for(double i = minY-30; i>=0; i -= 30){
-                Field field = getByXY(fieldArrayList,maxX,i,true);
-                if (field == null){
-                    break;
-                } else {
-                    existingWord.add(0,field);
-                }
-            }
-            existingWord.add(getByXYPlayerGame(playerGameFields,minX,minY));
-            for(double i = minY+30; i<=450; i += 30){
-                Field field = getByXY(fieldArrayList,minX,i,true);
-                if (field == null){
-                    Field gameField = getByXYPlayerGame(playerGameFields,minX,i);
-                    if (gameField == null) {
+            // vertical word
+            if (toReturnVertical) {
+                toReturnY = true;
+                for (double i = minY - 30; i >= 0; i -= 30) {
+                    Field field = getByXY(fieldArrayList, maxX, i, true);
+                    if (field == null) {
                         break;
                     } else {
-                        existingWord.add(gameField);
+                        existingWord.add(0, field);
                     }
-                } else {
-                    existingWord.add(field);
+                }
+                existingWord.add(getByXYPlayerGame(playerGameFields, minX, minY));
+                for (double i = minY + 30; i <= 450; i += 30) {
+                    Field field = getByXY(fieldArrayList, minX, i, true);
+                    if (field == null) {
+                        Field gameField = getByXYPlayerGame(playerGameFields, minX, i);
+                        if (gameField == null) {
+                            break;
+                        } else {
+                            existingWord.add(gameField);
+                        }
+                    } else {
+                        existingWord.add(field);
+                    }
                 }
             }
-        }
 
-        StringBuilder word = new StringBuilder();
-        for(Field field: existingWord) {
-            word.append(field.button.getText());
-        }
-        ArrayList<String> letterArray = new ArrayList<>();
-        for(Field field : existingWord){
-            letterArray.add(field.button.getText());
-        }
-        for(Field field:playerGameFields){
-            if(!letterArray.contains(field.button.getText())){
-                return false;
+            StringBuilder word = new StringBuilder();
+            for (Field field : existingWord) {
+                word.append(field.button.getText());
             }
-        }
+            ArrayList<String> letterArray = new ArrayList<>();
+            for (Field field : existingWord) {
+                letterArray.add(field.button.getText());
+            }
+            for (Field field : playerGameFields) {
+                if (!letterArray.contains(field.button.getText())) {
+                    return false;
+                }
+            }
 
 //        if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
 //            return false;
 //        }
 
-        // counting points
-        int pointsFinal,points = 0;
-        int wordBonus = 1;
-        for(Field field : existingWord){
-            if (field.getWordBonus() != 1){
-                wordBonus = field.getWordBonus();
+            // counting points
+            int pointsFinal, points = 0;
+            int wordBonus = 1;
+            for (Field field : existingWord) {
+                if (field.getWordBonus() != 1) {
+                    wordBonus = field.getWordBonus();
+                }
+                points += field.getLetterBonus() * field.getLetterPoints();
             }
-            points += field.getLetterBonus() * field.getLetterPoints();
-        }
-        if (wordBonus == 1){
-            pointsFinal = points;
-        } else {
-            pointsFinal = points * wordBonus;
-        }
-        // updating scoreboard
-        if(player1.getText().equals(player.getName())){
-            int current_points = Integer.parseInt(player1Points.getText());
-            current_points += pointsFinal;
-            player1Points.setText(Integer.toString(current_points));
-        }
-        if(player2.getText().equals(player.getName())){
-            int current_points = Integer.parseInt(player2Points.getText());
-            current_points += pointsFinal;
-            player2Points.setText(Integer.toString(current_points));
-        }
-        if(player3.getText().equals(player.getName())){
-            int current_points = Integer.parseInt(player3Points.getText());
-            current_points += pointsFinal;
-            player3Points.setText(Integer.toString(current_points));
-        }
-        if(player4.getText().equals(player.getName())){
-            int current_points = Integer.parseInt(player4Points.getText());
-            current_points += pointsFinal;
-            player4Points.setText(Integer.toString(current_points));
-        }
+            if (wordBonus == 1) {
+                pointsFinal = points;
+            } else {
+                pointsFinal = points * wordBonus;
+            }
+            // updating scoreboard
+            if (player1.getText().equals(player.getName())) {
+                int current_points = Integer.parseInt(player1Points.getText());
+                current_points += pointsFinal;
+                player1Points.setText(Integer.toString(current_points));
+            }
+            if (player2.getText().equals(player.getName())) {
+                int current_points = Integer.parseInt(player2Points.getText());
+                current_points += pointsFinal;
+                player2Points.setText(Integer.toString(current_points));
+            }
+            if (player3.getText().equals(player.getName())) {
+                int current_points = Integer.parseInt(player3Points.getText());
+                current_points += pointsFinal;
+                player3Points.setText(Integer.toString(current_points));
+            }
+            if (player4.getText().equals(player.getName())) {
+                int current_points = Integer.parseInt(player4Points.getText());
+                current_points += pointsFinal;
+                player4Points.setText(Integer.toString(current_points));
+            }
 
 
-        System.out.println(word);
-        return true;
+            System.out.println(word);
+            return true;
+        }
+
     }
-
+    public boolean checkIfOutOfLetters(){
+        int playersWithoutLetters=0;
+        for (Player player : playerArrayList){
+            if(player.playersLetters.size() == 0){
+                playersWithoutLetters++;
+            }
+        }
+        if (playersWithoutLetters == playerArrayList.size()){
+            //end game
+            System.out.println("KUNIEC");
+            return true;
+        }
+        return false;
+    }
+    public void passTurn(){
+        playerArrayList.remove(player);
+        playerArrayList.add(player);
+        this.player = playerArrayList.get(0);
+        playerName.setText((player.getName()));
+        setLettersOfPlayer(player.playersLetters);
+        activateLetterFields();
+    }
     public boolean checkWord(String word){
         boolean isWord = false;
         try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/com/example/scrabble/dictionary.txt"))) {
@@ -429,7 +467,12 @@ public class HelloApplication extends Application {
 
     public void activateLetterFields(){
         for (LetterField letterField:letterFieldArrayList) { // pogubiłem sie w letterfield/field/gamefield xD ale działa
-            letterField.button.setDisable(false);
+            if(letterField.button.getText().equals("")){
+                letterField.button.setDisable(true);
+            } else {
+                letterField.button.setDisable(false);
+            }
+
         }
     }
 
