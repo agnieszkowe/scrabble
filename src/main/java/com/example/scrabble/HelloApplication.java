@@ -6,17 +6,12 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.text.Text;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 
@@ -28,10 +23,9 @@ public class HelloApplication extends Application {
     public ArrayList<LetterField> letterFieldArrayList = new ArrayList<>();
     public ArrayList<Field> playerGameFields = new ArrayList<>();
     public Player player;
-    private Button giveBackWord;
+    private Button giveBackWord, passTurn;
     private Label playerName;
     private boolean ifFirstTurn;
-    //private TableView scoreboard;
     private Label scoreboard;
     private Label player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points;
     @Override
@@ -42,30 +36,21 @@ public class HelloApplication extends Application {
         stage.show();
         giveBackWord = new Button("Give back the word");
         giveBackWord.relocate(535,310);
+        passTurn = new Button("Pass my turn");
+        passTurn.relocate(700,310);
         playerName = new Label();
         playerName.setText("");
         playerName.relocate(630, 138);
         playerName.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
-        //scoreboard = new TableView();
-        //scoreboard.setMaxHeight(0);
-        //scoreboard.setMinHeight(0);
-        //TableColumn player1 = new TableColumn();
-        //TableColumn player2 = new TableColumn();
-        //TableColumn player3 = new TableColumn();
-        //TableColumn player4 = new TableColumn();
-        //TableColumn player1points = new TableColumn();
         createScoreboard();
-        //scoreboard.getColumns().addAll(player1, player2, player3, player4);
-        //scoreboard.relocate(600,200);
-        //scoreboard.setPlaceholder(new Label(""));
-        //player1.getColumns().addAll(player1points);
-        root.getChildren().addAll(giveBackWord, playerName,scoreboard,player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points);
+        root.getChildren().addAll(giveBackWord, playerName,scoreboard,player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points,passTurn);
         Generator generator = new Generator();
         fieldArrayList = generator.mapGenerator(root);
         letterFieldArrayList = generator.LetterFieldsGenerator(root);
         letterArrayList = generator.LetterGenerator();
         playerArrayList.add(new Player("Aga",generator.PlayerLetterRandom(letterArrayList)));
         playerArrayList.add(new Player("Maks",generator.PlayerLetterRandom(letterArrayList)));
+        playerArrayList.add(new Player("Dawid",generator.PlayerLetterRandom(letterArrayList)));
         setNamesOfPlayers();
         player = playerArrayList.get(0);
         setLettersOfPlayer(player.playersLetters);
@@ -87,7 +72,10 @@ public class HelloApplication extends Application {
         if(player.playersLetters.size() == 0){
             passTurn();
         }
-        if(checkIfOutOfLetters()){ // returns true if all of players doesnt have any letters
+        if(passTurn.isPressed()){
+            passTurn();
+        }
+        if(checkIfOutOfLetters()){ // returns true if all of players dont have any letters
             //end game loop, show results
         } else {
             if (this.giveBackWord.isPressed()) {
@@ -127,7 +115,6 @@ public class HelloApplication extends Application {
                 //letterFieldArrayList.remove(s);
             }
 
-            ArrayList<Integer> letterFromSackToDelete = new ArrayList<>();
             Random random = new Random();
             Integer NoLeftPlayersLetters = player.playersLetters.size();
             for (int i = 0; i < 7 - NoLeftPlayersLetters; i++) {
@@ -135,15 +122,8 @@ public class HelloApplication extends Application {
                     int rand = random.nextInt(letterArrayList.size());
                     player.playersLetters.add(letterArrayList.get(rand));
                     letterArrayList.remove(rand);
-                } else {
-                    for (Field field : letterFieldArrayList){
-                        if (field.button.isDisable()){
-                            field.button.setText("");
-                        }
-                    }
                 }
             }
-
 
             playerArrayList.remove(player);
             playerArrayList.add(player);
@@ -177,6 +157,9 @@ public class HelloApplication extends Application {
             letterFieldArrayList.get(counter).setLetterPoints(letter.getValue());
             letterFieldArrayList.get(counter).letter = letter;
             counter++;
+        }
+        for(int i=counter; i < 7;i++){
+            letterFieldArrayList.get(i).button.setText("");
         }
     }
 
@@ -214,7 +197,6 @@ public class HelloApplication extends Application {
         if(playerGameFields.size()==0){
             return false;
         } else {
-
             ArrayList<Double> xArray = new ArrayList<>();
             ArrayList<Double> yArray = new ArrayList<>();
             for (Field field : playerGameFields) {
@@ -421,8 +403,6 @@ public class HelloApplication extends Application {
                 current_points += pointsFinal;
                 player4Points.setText(Integer.toString(current_points));
             }
-
-
             System.out.println(word);
             return true;
         }

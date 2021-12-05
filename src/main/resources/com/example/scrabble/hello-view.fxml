@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-
-<Pane maxHeight="800.0" maxWidth="1000.0" minHeight="660.0" minWidth="1000.0" prefHeight="660.0" prefWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="800.0" maxWidth="1000.0" minHeight="660.0" minWidth="1000.0" prefHeight="660.0" prefWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <SplitPane layoutX="536.0" layoutY="429.0" prefHeight="189.0" prefWidth="441.0" style="-fx-background-color: white; -fx-border-color: black;">
          <items>
@@ -207,7 +201,7 @@
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
          </padding>
       </SplitPane>
-      <Button layoutX="535.0" layoutY="347.0" mnemonicParsing="false" mouseTransparent="true" prefHeight="44.0" prefWidth="207.0" text="Give Back The Word">
+      <Button fx:id="giveBackTheWord" layoutX="535.0" layoutY="347.0" mnemonicParsing="false" mouseTransparent="true" prefHeight="44.0" prefWidth="207.0" text="Give Back The Word">
          <font>
             <Font size="20.0" />
          </font>
