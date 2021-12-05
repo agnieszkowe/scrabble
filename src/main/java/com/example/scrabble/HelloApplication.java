@@ -32,7 +32,7 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         Pane root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/hello-view.fxml")));
         stage.setScene(new Scene(root));
-        stage.setTitle("Hello!");
+        //stage.setTitle("Hello!");
         stage.show();
         giveBackWord = new Button("Give back the word");
         giveBackWord.relocate(535,310);
