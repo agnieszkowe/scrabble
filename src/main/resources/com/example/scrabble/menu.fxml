@@ -9,17 +9,30 @@
    <children>
       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0">
          <children>
-            <Button fx:id="newGameButton" layoutX="350.0" layoutY="250.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="PLAY" textAlignment="CENTER">
-               <font>
-                  <Font name="Centaur" size="15.0" />
-               </font>
-            </Button>
-            <Button fx:id="optionsButton" layoutX="350.0" layoutY="350.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="OPTIONS">
+            <Button fx:id="newGameButton" layoutX="350.0" layoutY="150.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="PLAY" textAlignment="CENTER">
                <font>
                   <Font name="Century" size="15.0" />
                </font>
             </Button>
-            <Button layoutX="350.0" layoutY="450.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="Button" />
+            <Button fx:id="optionsButton" layoutX="350.0" layoutY="250.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="OPTIONS">
+               <font>
+                  <Font name="Century" size="15.0" />
+               </font>
+            </Button>
+            <Button fx:id="loginButton" layoutX="350.0" layoutY="350.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="LOGIN">
+               <font>
+                  <Font name="Century" size="15.0" />
+               </font></Button>
+            <Button fx:id="createAccButton" layoutX="350.0" layoutY="450.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="CREATE ACCOUNT">
+               <font>
+                  <Font name="Century" size="15.0" />
+               </font>
+            </Button>
+            <Button fx:id="exitButton" layoutX="350.0" layoutY="550.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="EXIT">
+               <font>
+                  <Font name="Century" size="15.0" />
+               </font>
+            </Button>
          </children>
       </AnchorPane>
    </children>
