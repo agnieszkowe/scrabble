@@ -4,10 +4,12 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.Pane?>
 
-
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scrabble.Controllers.OptionController">
    <children>
-      <ComboBox fx:id="playersNoComboBox" layoutX="176.0" layoutY="196.0" prefWidth="150.0" />
       <Button fx:id="goBackButton" layoutX="474.0" layoutY="525.0" mnemonicParsing="false" text="Back" />
+      <ComboBox fx:id="playersNoComboBox1" layoutX="176.0" layoutY="196.0" prefWidth="150.0" />
+      <ComboBox fx:id="playersNoComboBox2" layoutX="176.0" layoutY="241.0" prefWidth="150.0" />
+      <ComboBox fx:id="playersNoComboBox3" layoutX="176.0" layoutY="288.0" prefWidth="150.0" />
+      <ComboBox fx:id="playersNoComboBox4" layoutX="176.0" layoutY="339.0" prefWidth="150.0" />
    </children>
 </Pane>

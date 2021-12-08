@@ -1,6 +1,8 @@
 package com.example.scrabble;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -13,6 +15,7 @@ public class Menu extends Application {
     static public Pane root;
     static public Pane mainMenu;
     static public Pane options;
+    static public ObservableList<String> observablePlayerList;
     @Override
     public void start(Stage primaryStage) throws Exception {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/mainFrame.fxml")));
@@ -21,5 +24,6 @@ public class Menu extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
         primaryStage.setResizable(false);
+        observablePlayerList = FXCollections.observableArrayList();
     }
 }
