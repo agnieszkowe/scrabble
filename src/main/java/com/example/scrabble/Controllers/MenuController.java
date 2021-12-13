@@ -60,6 +60,18 @@ public class MenuController {
 
         });
 
+        createAccButton.setOnAction(event -> {
+            try {
+                root.getChildren().remove(mainMenu);
+                createAcc = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/createAcc.fxml")));
+                root.getChildren().add(createAcc);
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        });
+
 
     }
 }
