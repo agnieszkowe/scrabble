@@ -2,23 +2,19 @@ package com.example.scrabble.Controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.interfaces.PBEKey;
 import javax.crypto.spec.PBEKeySpec;
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.util.Objects;
+
+import static com.example.scrabble.Menu.*;
+import static com.example.scrabble.Menu.observablePlayerList;
 
 public class CreateAccController {
 
@@ -27,13 +23,19 @@ public class CreateAccController {
     private TextField nickTextField;
 
     @FXML
-    private TextField passTextField;
+    private PasswordField passTextField;
 
     @FXML
-    private TextField confirmPassTextField;
+    private PasswordField confirmPassTextField;
 
     @FXML
     private Button submitButton;
+
+    @FXML
+    private Button exitButton;
+
+    @FXML
+    private Label infoLabel;
 
     public void initialize() {
 
@@ -45,9 +47,28 @@ public class CreateAccController {
                 if (password.length() >= 8) {
                     if (password.equals(confirmPass)) {
                         createAccount();
+                    }else {
+                        infoLabel.setText("Passwords are different");
                     }
+                }else {
+                    infoLabel.setText("Password is too short");
                 }
+            }else {
+                infoLabel.setText("Passwords can't contain ';'");
             }
+        });
+
+        exitButton.setOnAction(event -> {
+
+        try {
+            root.getChildren().remove(createAcc);
+            //options = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/options.fxml")));
+            root.getChildren().add(mainMenu);
+            observablePlayerList.clear();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         });
 
     }
@@ -70,11 +91,16 @@ public class CreateAccController {
             writer.write(nickTextField.getText()+";"+strongPassword+";"+"0"+";");
             writer.newLine();
             writer.close();
+            infoLabel.setText("Account Created Successfully");
+
         } catch (IOException e) {
+            infoLabel.setText("Account Creation Failed");
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
+            infoLabel.setText("Account Creation Failed");
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
+            infoLabel.setText("Account Creation Failed");
             e.printStackTrace();
         }
 
