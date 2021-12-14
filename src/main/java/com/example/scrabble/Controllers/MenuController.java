@@ -72,6 +72,18 @@ public class MenuController {
 
         });
 
+        loginButton.setOnAction(event -> {
+            try {
+                root.getChildren().remove(mainMenu);
+                login = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/login.fxml")));
+                root.getChildren().add(login);
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        });
+
 
     }
 }
