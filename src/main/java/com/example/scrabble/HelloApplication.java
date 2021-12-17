@@ -14,12 +14,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import static com.example.scrabble.Menu.observablePlayerList;
+
 
 public class HelloApplication extends Application {
 
     public ArrayList<Field> fieldArrayList = new ArrayList<>();
     public ArrayList<Letter> letterArrayList = new ArrayList<>();
     public ArrayList<Player> playerArrayList = new ArrayList<>();
+    static public ArrayList<String> playerNicknamesArrayList = new ArrayList<>();
     public ArrayList<LetterField> letterFieldArrayList = new ArrayList<>();
     public ArrayList<Field> playerGameFields = new ArrayList<>();
     public Player player;
@@ -48,9 +51,12 @@ public class HelloApplication extends Application {
         fieldArrayList = generator.mapGenerator(root);
         letterFieldArrayList = generator.LetterFieldsGenerator(root);
         letterArrayList = generator.LetterGenerator();
-        playerArrayList.add(new Player("Aga",generator.PlayerLetterRandom(letterArrayList)));
-        playerArrayList.add(new Player("Maks",generator.PlayerLetterRandom(letterArrayList)));
-        playerArrayList.add(new Player("Dawid",generator.PlayerLetterRandom(letterArrayList)));
+//        playerArrayList.add(new Player("Aga",generator.PlayerLetterRandom(letterArrayList)));
+//        playerArrayList.add(new Player("Maks",generator.PlayerLetterRandom(letterArrayList)));
+//        playerArrayList.add(new Player("Dawid",generator.PlayerLetterRandom(letterArrayList)));
+        for (String s:playerNicknamesArrayList) {
+            playerArrayList.add(new Player(s,generator.PlayerLetterRandom(letterArrayList)));
+        }
         setNamesOfPlayers();
         player = playerArrayList.get(0);
         setLettersOfPlayer(player.playersLetters);

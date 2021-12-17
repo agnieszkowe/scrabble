@@ -41,24 +41,30 @@ public class loginController {
 
         submitButton.setOnAction(event -> {
             String nick = nickTextField.getText();
-            String password = passTextField.getText();
-            if (!nick.contains(";") && !password.contains(";")){
-                String hash = getFromDatabase(nick,0,1);
-                if (hash != ""){
-                    try {
-                        if (validatePassword(password,hash)){
-                            infoLabel.setText("nice");
-                        };
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    } catch (InvalidKeySpecException e) {
-                        e.printStackTrace();
+            if (!observablePlayerList.contains(nick)) {
+                String password = passTextField.getText();
+                if (!nick.contains(";") && !password.contains(";")) {
+                    String hash = getFromDatabase(nick, 0, 1);
+                    if (hash != "") {
+                        try {
+                            if (validatePassword(password, hash)) {
+                                observablePlayerList.add(nick);
+                                infoLabel.setText("nice");
+                            }
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        } catch (InvalidKeySpecException e) {
+                            e.printStackTrace();
+                        }
+                    }else {
+                        infoLabel.setText("The user does not exist");
                     }
 
+                } else {
+                    infoLabel.setText("Passwords can't contain ';'");
                 }
-
             }else {
-                infoLabel.setText("Passwords can't contain ';'");
+                infoLabel.setText("User already logged");
             }
         });
 
@@ -68,7 +74,6 @@ public class loginController {
                 root.getChildren().remove(login);
                 //options = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/options.fxml")));
                 root.getChildren().add(mainMenu);
-                observablePlayerList.clear();
             }catch (Exception e){
                 e.printStackTrace();
             }

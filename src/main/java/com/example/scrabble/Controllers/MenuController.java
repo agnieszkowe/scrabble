@@ -46,11 +46,6 @@ public class MenuController {
 
         optionsButton.setOnAction(event -> {
             try {
-                observablePlayerList.add("Bot Marcin");
-                observablePlayerList.add("Bot Andrzej");
-                observablePlayerList.add("Bot Krzysztof");
-                observablePlayerList.add("Bot Duszan");
-                observablePlayerList.add("");
                 root.getChildren().remove(mainMenu);
                 options = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/options.fxml")));
                 root.getChildren().add(options);

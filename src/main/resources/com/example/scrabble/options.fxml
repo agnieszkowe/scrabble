@@ -11,5 +11,6 @@
       <ComboBox fx:id="playersNoComboBox2" layoutX="176.0" layoutY="241.0" prefWidth="150.0" />
       <ComboBox fx:id="playersNoComboBox3" layoutX="176.0" layoutY="288.0" prefWidth="150.0" />
       <ComboBox fx:id="playersNoComboBox4" layoutX="176.0" layoutY="339.0" prefWidth="150.0" />
+      <Button fx:id="setOptionButton" layoutX="455.0" layoutY="466.0" mnemonicParsing="false" text="Set Options" />
    </children>
 </Pane>

@@ -27,5 +27,10 @@ public class Menu extends Application {
         primaryStage.show();
         primaryStage.setResizable(false);
         observablePlayerList = FXCollections.observableArrayList();
+        observablePlayerList.add("Bot Marcin");
+        observablePlayerList.add("Bot Andrzej");
+        observablePlayerList.add("Bot Krzysztof");
+        observablePlayerList.add("Bot Duszan");
+        observablePlayerList.add("");
     }
 }

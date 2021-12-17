@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 
+import static com.example.scrabble.HelloApplication.playerNicknamesArrayList;
 import static com.example.scrabble.Menu.*;
 
 public class OptionController {
@@ -24,15 +25,33 @@ public class OptionController {
     @FXML
     private ComboBox<String> playersNoComboBox4;
 
+    @FXML
+    private Button setOptionButton;
+
+
     public void initialize() {
         goBackButton.setOnAction(event -> {
             try {
                 root.getChildren().remove(options);
                 //options = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/options.fxml")));
                 root.getChildren().add(mainMenu);
-                observablePlayerList.clear();
             }catch (Exception e){
                 e.printStackTrace();
+            }
+        });
+
+        setOptionButton.setOnAction(event -> {
+            if (!playersNoComboBox1.getValue().equals("")) {
+                playerNicknamesArrayList.add(playersNoComboBox1.getValue());
+            }
+            if (!playersNoComboBox2.getValue().equals("")) {
+                playerNicknamesArrayList.add(playersNoComboBox2.getValue());
+            }
+            if (!playersNoComboBox3.getValue().equals("")) {
+                playerNicknamesArrayList.add(playersNoComboBox3.getValue());
+            }
+            if (!playersNoComboBox4.getValue().equals("")) {
+                playerNicknamesArrayList.add(playersNoComboBox4.getValue());
             }
         });
 
