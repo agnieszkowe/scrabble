@@ -100,27 +100,28 @@ public class Generator {
         for (int i = 0; i < 12; i++) {
             letterArrayList.add(new Letter("E",1));
         }
-        for (int i = 0; i < 9; i++) {
+        /*for (int i = 0; i < 9; i++) {
             letterArrayList.add(new Letter("A",1));
             letterArrayList.add(new Letter("I",1));
         }
         for (int i = 0; i < 8; i++) {
             letterArrayList.add(new Letter("O",1));
-        }/*
-//        for (int i = 0; i < 6; i++) {
-//            letterArrayList.add(new Letter("N",1));
-//            letterArrayList.add(new Letter("R",1));
-//            letterArrayList.add(new Letter("T",1));
+        }*/
+    //    for (int i = 0; i < 6; i++) {
+   //         letterArrayList.add(new Letter("N",1));
+  //          letterArrayList.add(new Letter("R",1));
+ //           letterArrayList.add(new Letter("T",1));
 //        }
+            /*
 //        for (int i = 0; i < 4; i++) {
 //            letterArrayList.add(new Letter("L",1));
 //            letterArrayList.add(new Letter("S",1));
 //            letterArrayList.add(new Letter("U",1));
 //            letterArrayList.add(new Letter("D",2));
 //        }
-//        for (int i = 0; i < 3; i++) {
-//            letterArrayList.add(new Letter("G",2));
-//        }
+  */      for (int i = 0; i < 3; i++) {
+            letterArrayList.add(new Letter("G",2));
+        }
 //        for (int i = 0; i < 2; i++) {
 //            letterArrayList.add(new Letter("B",3));
 //            letterArrayList.add(new Letter("C",3));

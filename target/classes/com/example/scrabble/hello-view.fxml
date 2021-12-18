@@ -201,22 +201,12 @@
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
          </padding>
       </SplitPane>
-      <Button fx:id="giveBackTheWord" layoutX="535.0" layoutY="347.0" mnemonicParsing="false" mouseTransparent="true" prefHeight="44.0" prefWidth="207.0" text="Give Back The Word">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Button>
-      <Button layoutX="769.0" layoutY="347.0" mnemonicParsing="false" mouseTransparent="true" prefHeight="44.0" prefWidth="207.0" text="Give Up">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Button>
       <Label layoutX="564.0" layoutY="138.0" text="Turn:" textFill="WHITE">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Pane layoutX="606.0" layoutY="213.0" prefHeight="90.0" prefWidth="300.0" style="-fx-background-color: white;" />
+      <Pane layoutX="607.0" layoutY="211.0" prefHeight="90.0" prefWidth="300.0" style="-fx-background-color: white;" />
       <Label layoutX="559.0" layoutY="23.0" text="Scrabble" textFill="#5bd7a7">
          <font>
             <Font name="Bookman Old Style Bold Italic" size="80.0" />

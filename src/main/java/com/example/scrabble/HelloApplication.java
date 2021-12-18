@@ -1,12 +1,13 @@
 package com.example.scrabble;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.io.BufferedReader;
@@ -14,7 +15,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-import static com.example.scrabble.Menu.observablePlayerList;
+import static com.example.scrabble.Menu.*;
+
 
 
 public class HelloApplication extends Application {
@@ -26,27 +28,24 @@ public class HelloApplication extends Application {
     public ArrayList<LetterField> letterFieldArrayList = new ArrayList<>();
     public ArrayList<Field> playerGameFields = new ArrayList<>();
     public Player player;
-    private Button giveBackWord, passTurn;
-    private Label playerName;
+    private ArrayList<Player> playersOut = new ArrayList<>();
+    private Button giveBackWord, passTurn, surrender;
+    private Label playerName, information;
     private boolean ifFirstTurn;
     private Label scoreboard;
-    private Label player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points;
+    static public Label player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points;
+    private Stage stage;
+
     @Override
     public void start(Stage stage) throws IOException {
+        this.stage = stage;
         Pane root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/hello-view.fxml")));
         stage.setScene(new Scene(root));
         //stage.setTitle("Hello!");
         stage.show();
-        giveBackWord = new Button("Give back the word");
-        giveBackWord.relocate(535,310);
-        passTurn = new Button("Pass my turn");
-        passTurn.relocate(700,310);
-        playerName = new Label();
-        playerName.setText("");
-        playerName.relocate(630, 138);
-        playerName.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
+        setGameboard();
         createScoreboard();
-        root.getChildren().addAll(giveBackWord, playerName,scoreboard,player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points,passTurn);
+        root.getChildren().addAll(giveBackWord,playerName,scoreboard,player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points,passTurn,surrender,information);
         Generator generator = new Generator();
         fieldArrayList = generator.mapGenerator(root);
         letterFieldArrayList = generator.LetterFieldsGenerator(root);
@@ -75,15 +74,53 @@ public class HelloApplication extends Application {
 
     private void gameLoop() {
         //System.out.println("siema");
+        /*
         if(player.playersLetters.size() == 0){
+            if(!playersOut.contains(player)){
+                playersOut.add(player);
+            }
+            if(playersOut.size() == playerArrayList.size()){
+                try {
+                    root.getChildren().remove(root);
+                    results = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/results.fxml")));
+                    root.getChildren().add(results);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
             passTurn();
+
+
+        }*/
+        if(player.playersLetters.size()==0){
+            if(!playersOut.contains(player)){
+                playersOut.add(player);
+            }
+            if(playersOut.size()==playerArrayList.size()){
+                //System.out.println("KONIEC");
+                try {
+                    results = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/results.fxml")));
+                    stage.setScene(new Scene(results));
+                    stage.show();
+                    // TU TRZEBA ZATRZYMAC GAMELOOP I OTWORZYC MAIN MENU PO KLIKNIECU PRZYCISKU GO BACK
+
+
+
+                    root.getChildren().add(results);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            } else {
+                passTurn();
+            }
         }
+
         if(passTurn.isPressed()){
             passTurn();
         }
-        if(checkIfOutOfLetters()){ // returns true if all of players dont have any letters
-            //end game loop, show results
-        } else {
+        //if(checkIfOutOfLetters()){ // returns true if all of players dont have any letters
+
+       // } else {
             if (this.giveBackWord.isPressed()) {
                 nextTurnGenerator();
             }
@@ -92,7 +129,7 @@ public class HelloApplication extends Application {
             checkIfLetterInput();
 
             //System.out.println(letterArrayList.size());
-        }
+    //    }
     }
 
     public static void main(String[] args) {
@@ -100,9 +137,9 @@ public class HelloApplication extends Application {
     }
 
 
-    private void nextTurnGenerator(){
+    public void nextTurnGenerator(){
         if (checkIfWordCorrectAfter()) {
-
+            information.setText("");
             for (Field field : playerGameFields) {
                 field.isModified = true;
             }
@@ -140,6 +177,7 @@ public class HelloApplication extends Application {
 
         } else {
             System.out.println("word IS BAD");
+            information.setText("Wrong Word! Try again or pass your turn");
 
             for (Field field : playerGameFields) {
                 if (field.isModified == false) {
@@ -200,7 +238,7 @@ public class HelloApplication extends Application {
         }
     }
     private boolean checkIfWordCorrectAfter(){
-        if(playerGameFields.size()==0){
+        if(playerGameFields.size()==0) {
             return false;
         } else {
             ArrayList<Double> xArray = new ArrayList<>();
@@ -414,7 +452,7 @@ public class HelloApplication extends Application {
         }
 
     }
-    public boolean checkIfOutOfLetters(){
+    /*public boolean checkIfOutOfLetters(){
         int playersWithoutLetters=0;
         for (Player player : playerArrayList){
             if(player.playersLetters.size() == 0){
@@ -428,6 +466,8 @@ public class HelloApplication extends Application {
         }
         return false;
     }
+    */
+
     public void passTurn(){
         playerArrayList.remove(player);
         playerArrayList.add(player);
@@ -553,5 +593,26 @@ public class HelloApplication extends Application {
             player3.setText(playerArrayList.get(2).getName());
             player4.setText(playerArrayList.get(3).getName());
         }
+    }
+    public void setGameboard(){
+        information = new Label("");
+        information.relocate(100,570);
+        information.setTextFill(Color.color(1,0,0));
+        giveBackWord = new Button("Give back the word");
+        giveBackWord.relocate(535,340);
+        giveBackWord.setMinHeight(50);
+        giveBackWord.setMinWidth(150);
+        passTurn = new Button("Pass my turn");
+        passTurn.relocate(700,340);
+        passTurn.setMinWidth(150);
+        passTurn.setMinHeight(50);
+        surrender = new Button("Give Up");
+        surrender.relocate(865,340);
+        surrender.setMinHeight(50);
+        surrender.setMinWidth(100);
+        playerName = new Label();
+        playerName.setText("");
+        playerName.relocate(630, 138);
+        playerName.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
     }
 }

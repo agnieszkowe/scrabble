@@ -17,6 +17,7 @@ public class Menu extends Application {
     static public Pane options;
     static public Pane createAcc;
     static public Pane login;
+    static public Pane results;
     static public ObservableList<String> observablePlayerList;
     @Override
     public void start(Stage primaryStage) throws Exception {
