@@ -35,6 +35,7 @@ public class HelloApplication extends Application {
     private Label scoreboard;
     static public Label player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points;
     private Stage stage;
+    Thread thread = null;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -61,7 +62,7 @@ public class HelloApplication extends Application {
         setLettersOfPlayer(player.playersLetters);
         playerName.setText((player.getName()));
         ifFirstTurn = true;
-        new Thread(new Runnable() {
+        thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), e -> gameLoop()));
@@ -69,7 +70,8 @@ public class HelloApplication extends Application {
                 timeline.play();
                 //setTimeline(timeline);
             }
-        }).start();
+        });
+        thread.start();
     }
 
     private void gameLoop() {
@@ -99,6 +101,7 @@ public class HelloApplication extends Application {
             if(playersOut.size()==playerArrayList.size()){
                 //System.out.println("KONIEC");
                 try {
+
                     results = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/results.fxml")));
                     stage.setScene(new Scene(results));
                     stage.show();

@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import com.example.scrabble.HelloApplication;
 
+import java.io.*;
 import java.security.Key;
 import java.util.*;
 
@@ -113,8 +114,38 @@ public class resultsController {
             fourthPlayer.setText(fourth);
             fourthPoints.setText(String.valueOf(fourthPlayerPoints) + " pkt");
         }
+        getFromDatabase();
 
 
+    }
+    public void updateStatistics(){
 
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter((new OutputStreamWriter(
+                    new FileOutputStream("src/main/resources/com/example/scrabble/database.txt", true), "UTF-8")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+    private String getFromDatabase() {
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(new File("src/main/resources/com/example/scrabble/statistics.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String[] parts;
+        String stringToReturn = "";
+        while (true) {
+            assert scanner != null;
+            if (!scanner.hasNextLine()) break;
+            parts = scanner.nextLine().split(";");
+            System.out.println(parts[0]);
+        }
+        scanner.close();
+        return stringToReturn;
     }
 }
