@@ -35,7 +35,8 @@ public class HelloApplication extends Application {
     private Label scoreboard;
     static public Label player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points;
     private Stage stage;
-    Thread thread = null;
+    private Thread thread = null;
+    private Timeline timeline;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -65,7 +66,7 @@ public class HelloApplication extends Application {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), e -> gameLoop()));
+                timeline = new Timeline(new KeyFrame(Duration.millis(100), e -> gameLoop()));
                 timeline.setCycleCount(Timeline.INDEFINITE);
                 timeline.play();
                 //setTimeline(timeline);
@@ -102,6 +103,8 @@ public class HelloApplication extends Application {
                 //System.out.println("KONIEC");
                 try {
 
+                    //ogarnij sobie funkcję
+                    endGame();
                     results = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/results.fxml")));
                     stage.setScene(new Scene(results));
                     stage.show();
@@ -137,6 +140,10 @@ public class HelloApplication extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+    private void endGame(){
+        timeline.stop();
     }
 
 
