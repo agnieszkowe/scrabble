@@ -74,7 +74,7 @@ public class CreateAccController {
     }
 
     private void createAccount(){
-        BufferedWriter writer;
+        BufferedWriter writer, writer2;
         try {
             String password = passTextField.getText();
             int iterations = 1000;
@@ -91,6 +91,11 @@ public class CreateAccController {
             writer.write(nickTextField.getText()+";"+strongPassword+";"+"0"+";");
             writer.newLine();
             writer.close();
+            writer2 = new BufferedWriter((new OutputStreamWriter(
+                    new FileOutputStream("src/main/resources/com/example/scrabble/statistics.txt", true), "UTF-8")));
+            writer2.write(nickTextField.getText()+";"+ "0" + ";"+"0"+";" +"0");
+            //writer2.newLine();
+            writer2.close();
             infoLabel.setText("Account Created Successfully");
 
         } catch (IOException e) {

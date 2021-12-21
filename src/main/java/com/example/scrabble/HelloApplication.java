@@ -124,18 +124,12 @@ public class HelloApplication extends Application {
         if(passTurn.isPressed()){
             passTurn();
         }
-        //if(checkIfOutOfLetters()){ // returns true if all of players dont have any letters
 
-       // } else {
-            if (this.giveBackWord.isPressed()) {
-                nextTurnGenerator();
-            }
-            setLetterFieldTouch();
-
-            checkIfLetterInput();
-
-            //System.out.println(letterArrayList.size());
-    //    }
+        if (this.giveBackWord.isPressed()) {
+            nextTurnGenerator();
+        }
+        setLetterFieldTouch();
+        checkIfLetterInput();
     }
 
     public static void main(String[] args) {

@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import static com.example.scrabble.Menu.*;
@@ -33,7 +34,7 @@ public class MenuController {
 
 
 
-    public void initialize() {
+    public void initialize() throws IOException {
         newGameButton.setOnAction(event -> {
             HelloApplication helloApplication = new HelloApplication();
             Stage stage = (Stage) newGameButton.getScene().getWindow();

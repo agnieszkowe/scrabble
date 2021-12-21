@@ -1,6 +1,9 @@
 package com.example.scrabble.Controllers;
 
+import com.example.scrabble.Menu;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import com.example.scrabble.HelloApplication;
@@ -8,6 +11,9 @@ import com.example.scrabble.HelloApplication;
 import java.io.*;
 import java.security.Key;
 import java.util.*;
+
+import static com.example.scrabble.Menu.*;
+import static com.example.scrabble.Menu.results;
 
 public class resultsController {
     @FXML
@@ -39,7 +45,17 @@ public class resultsController {
     @FXML
     private Button goBackButton;
 
-    public void initialize() {
+    String winner;
+    int winner_Points;
+    String second;
+    int second_Points;
+    String third;
+    int third_Points;
+    String fourth;
+    int fourth_Points;
+
+
+    public void initialize() throws IOException {
 
 
         HashMap<String,Integer> results = new HashMap<>();
@@ -96,6 +112,18 @@ public class resultsController {
                 }
             }
         }
+        this.winner = winner;
+        this.winner_Points = winnerPlayerPoints;
+        this.second = second;
+        this.second_Points = secondPlayerPoints;
+        if(!third.isEmpty()){
+            this.third = third;
+            this.third_Points = thirdPlayerPoints;
+        }
+        if(!fourth.isEmpty()){
+            this.fourth = fourth;
+            this.fourth_Points = fourthPlayerPoints;
+        }
 
         firstPlayer.setText(winner);
         firstPoints.setText(String.valueOf(winnerPlayerPoints) + " pkt");
@@ -114,38 +142,100 @@ public class resultsController {
             fourthPlayer.setText(fourth);
             fourthPoints.setText(String.valueOf(fourthPlayerPoints) + " pkt");
         }
-        getFromDatabase();
+        updateStatistics();
 
+        goBackButton.setOnAction(event -> {
+
+            try {
+                // Tak żeby wrócić do mainMenu
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        });
 
     }
-    public void updateStatistics(){
 
-        BufferedWriter writer;
-        try {
-            writer = new BufferedWriter((new OutputStreamWriter(
-                    new FileOutputStream("src/main/resources/com/example/scrabble/database.txt", true), "UTF-8")));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
-    private String getFromDatabase() {
+    private void updateStatistics() throws IOException {
+
+        BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/com/example/scrabble/statistics.txt"));
+        int lines = 0;
+        while (reader.readLine() != null) lines++;
+        reader.close();
+
+
         Scanner scanner = null;
         try {
             scanner = new Scanner(new File("src/main/resources/com/example/scrabble/statistics.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        String[][] file = new String[lines][4];
         String[] parts;
-        String stringToReturn = "";
+
+        int counter = 0;
         while (true) {
             assert scanner != null;
             if (!scanner.hasNextLine()) break;
             parts = scanner.nextLine().split(";");
-            System.out.println(parts[0]);
+            System.out.println(parts[1]);
+            file[counter][0] = parts[0];
+            file[counter][1] = parts[1];
+            file[counter][2] = parts[2];
+            file[counter][3] = parts[3];
+            counter++;
         }
         scanner.close();
-        return stringToReturn;
+        System.out.println(file);
+        for(int i = 0; i < lines; i++){
+            if((file[i][0].equals(winner))){
+                int games = Integer.parseInt(file[i][1]);
+                games++;
+                file[i][1] = Integer.toString(games);
+                int wins = Integer.parseInt(file[i][2]);
+                wins++;
+                file[i][2] = Integer.toString(wins);
+                int points = Integer.parseInt(file[i][3]);
+                points += winner_Points;
+                file[i][3] = Integer.toString(points);
+            } else if (file[i][0].equals(second)){
+                int games = Integer.parseInt(file[i][1]);
+                games++;
+                file[i][1] = Integer.toString(games);
+                int points = Integer.parseInt(file[i][3]);
+                points += second_Points;
+                file[i][3] = Integer.toString(points);
+            } else if ((file[i][0].equals(third))){
+                int games = Integer.parseInt(file[i][1]);
+                games++;
+                file[i][1] = Integer.toString(games);
+                int points = Integer.parseInt(file[i][3]);
+                points += third_Points;
+                file[i][3] = Integer.toString(points);
+            }
+            else if (file[i][0].equals(fourth)){
+                int games = Integer.parseInt(file[i][1]);
+                games++;
+                file[i][1] = Integer.toString(games);
+                int points = Integer.parseInt(file[i][3]);
+                points += fourth_Points;
+                file[i][3] = Integer.toString(points);
+            }
+        }
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter((new OutputStreamWriter(
+                    new FileOutputStream("src/main/resources/com/example/scrabble/statistics.txt", false), "UTF-8")));
+            for(int i=0; i< lines; i++){
+                writer.write(file[i][0] + ";" + file[i][1] + ";" + file[i][2] + ";" + file[i][3]);
+                writer.newLine();
+            }
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }
