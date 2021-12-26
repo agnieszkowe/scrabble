@@ -64,7 +64,7 @@ public class CreateAccController {
             root.getChildren().remove(createAcc);
             //options = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/options.fxml")));
             root.getChildren().add(mainMenu);
-            observablePlayerList.clear();
+            //observablePlayerList.clear();
         }catch (Exception e){
             e.printStackTrace();
         }

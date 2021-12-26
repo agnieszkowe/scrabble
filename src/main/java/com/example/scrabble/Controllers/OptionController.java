@@ -1,9 +1,12 @@
 package com.example.scrabble.Controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 
+import static com.example.scrabble.HelloApplication.TimePerMove;
 import static com.example.scrabble.HelloApplication.playerNicknamesArrayList;
 import static com.example.scrabble.Menu.*;
 
@@ -27,6 +30,11 @@ public class OptionController {
 
     @FXML
     private Button setOptionButton;
+
+    @FXML
+    private ComboBox<Integer> timeComboBox;
+
+    public ObservableList<Integer> observableTimeList;
 
 
     public void initialize() {
@@ -53,6 +61,7 @@ public class OptionController {
             if (!playersNoComboBox4.getValue().equals("")) {
                 playerNicknamesArrayList.add(playersNoComboBox4.getValue());
             }
+            TimePerMove = timeComboBox.getValue();
         });
 
         playersNoComboBox1.setItems(observablePlayerList);
@@ -63,6 +72,12 @@ public class OptionController {
         playersNoComboBox3.setValue(observablePlayerList.get(observablePlayerList.size()-1));
         playersNoComboBox4.setItems(observablePlayerList);
         playersNoComboBox4.setValue(observablePlayerList.get(observablePlayerList.size()-1));
+
+        //time
+        observableTimeList = FXCollections.observableArrayList();
+        observableTimeList.addAll(15,30,45,60,90,120,150,180);
+        timeComboBox.setItems(observableTimeList);
+        timeComboBox.setValue(observableTimeList.get(0));
     }
 
 }

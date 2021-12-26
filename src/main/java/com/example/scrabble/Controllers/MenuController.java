@@ -2,6 +2,7 @@ package com.example.scrabble.Controllers;
 
 import com.example.scrabble.HelloApplication;
 import com.example.scrabble.Player;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -78,6 +79,14 @@ public class MenuController {
                 e.printStackTrace();
             }
 
+        });
+
+        exitButton.setOnAction(event -> {
+            try {
+                Platform.exit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
 

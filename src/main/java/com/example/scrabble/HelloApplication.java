@@ -1,4 +1,5 @@
 package com.example.scrabble;
+import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -33,10 +34,11 @@ public class HelloApplication extends Application {
     private Label playerName, information;
     private boolean ifFirstTurn;
     private Label scoreboard;
-    static public Label player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points;
+    static public Label player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points,timeLabel;
     private Stage stage;
     private Thread thread = null;
     private Timeline timeline;
+    static public Integer TimePerMove;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -47,7 +49,7 @@ public class HelloApplication extends Application {
         stage.show();
         setGameboard();
         createScoreboard();
-        root.getChildren().addAll(giveBackWord,playerName,scoreboard,player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points,passTurn,surrender,information);
+        root.getChildren().addAll(giveBackWord,playerName,scoreboard,player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points,passTurn,surrender,information,timeLabel);
         Generator generator = new Generator();
         fieldArrayList = generator.mapGenerator(root);
         letterFieldArrayList = generator.LetterFieldsGenerator(root);
@@ -62,6 +64,7 @@ public class HelloApplication extends Application {
         player = playerArrayList.get(0);
         setLettersOfPlayer(player.playersLetters);
         playerName.setText((player.getName()));
+
         ifFirstTurn = true;
         thread = new Thread(new Runnable() {
             @Override
@@ -178,6 +181,7 @@ public class HelloApplication extends Application {
             playerName.setText((player.getName()));
             setLettersOfPlayer(this.player.playersLetters);
             activateLetterFields();
+            calculateTime();
 
         } else {
             System.out.println("word IS BAD");
@@ -524,6 +528,12 @@ public class HelloApplication extends Application {
         return null;
     }
     public void createScoreboard(){
+        //Do zmiany wygląd i pozycja!! maks
+        Label timeLabel = new Label(TimePerMove.toString());
+        timeLabel.relocate(450,500);
+        timeLabel.setMinWidth(75);
+        timeLabel.setMinHeight(30);
+        timeLabel.setStyle("-fx-border-color:grey; -fx-background-color: #babfbb; -fx-alignment: center");
         int mine = -188;
         int minex = 6;
         Label scoreboard = new Label("Scoreboard");
@@ -580,6 +590,8 @@ public class HelloApplication extends Application {
         this.player3Points = player3Points;
         this.player4 = player4;
         this.player4Points = player4Points;
+        this.timeLabel = timeLabel;
+
     }
 
     public void setNamesOfPlayers(){
@@ -618,5 +630,31 @@ public class HelloApplication extends Application {
         playerName.setText("");
         playerName.relocate(630, 138);
         playerName.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
+    }
+
+    public void calculateTime(){
+        AnimationTimer animationTimer = new AnimationTimer(){
+            long lastUpdate = 0;
+            long convert = TimePerMove;
+            @Override
+            public void handle(long now) {
+                if ((now - lastUpdate) >= 1000_000_000) {
+                    lastUpdate = now;
+                    convert = convert - 1;
+                    timeLabel.setText(String.valueOf(convert));
+                }
+                if (convert <= 0) {
+                    timeLabel.setText(String.valueOf(TimePerMove));
+                    this.stop();
+                }
+
+            }
+            @Override
+            public void stop() {
+                timeLabel.setText(TimePerMove.toString());
+                //Tutaj trzeba wrzucić kod odpowiedzialny za zmianę tury!! maks
+            }
+        };
+        animationTimer.start();
     }
 }
