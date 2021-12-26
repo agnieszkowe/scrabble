@@ -3,4 +3,4 @@ aga;2;1;234
 cas;5;0;101
 cas2;3;3;73
 cas3;2;1;48
-player;0;0;0player;0;0;0player;0;0;0player;0;0;0player;0;0;0player;0;0;0player1;0;0;0
+player;0;0;0player

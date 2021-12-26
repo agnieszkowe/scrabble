@@ -39,6 +39,7 @@ public class HelloApplication extends Application {
     private Thread thread = null;
     private Timeline timeline;
     static public Integer TimePerMove;
+    private AnimationTimer animationTimer;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -76,6 +77,7 @@ public class HelloApplication extends Application {
             }
         });
         thread.start();
+        calculateTime();
     }
 
     private void gameLoop() {
@@ -111,11 +113,8 @@ public class HelloApplication extends Application {
                     results = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/results.fxml")));
                     stage.setScene(new Scene(results));
                     stage.show();
-                    // TU TRZEBA ZATRZYMAC GAMELOOP I OTWORZYC MAIN MENU PO KLIKNIECU PRZYCISKU GO BACK
+                    //root.getChildren().add(results);
 
-
-
-                    root.getChildren().add(results);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -181,8 +180,9 @@ public class HelloApplication extends Application {
             playerName.setText((player.getName()));
             setLettersOfPlayer(this.player.playersLetters);
             activateLetterFields();
-            calculateTime();
-
+            //calculateTime();
+            animationTimer.stop();
+            animationTimer.start();
         } else {
             System.out.println("word IS BAD");
             information.setText("Wrong Word! Try again or pass your turn");
@@ -477,6 +477,19 @@ public class HelloApplication extends Application {
     */
 
     public void passTurn(){
+        for (Field field : playerGameFields) {
+            if (field.isModified == false) {
+                field.button.setText("");
+                field.button.setDisable(false);
+            }
+        }
+
+        for (LetterField letterField : letterFieldArrayList) {
+            letterField.button.setDisable(false);
+        }
+
+        playerGameFields.clear();
+
         playerArrayList.remove(player);
         playerArrayList.add(player);
         this.player = playerArrayList.get(0);
@@ -653,9 +666,13 @@ public class HelloApplication extends Application {
             @Override
             public void stop() {
                 timeLabel.setText(TimePerMove.toString());
+                convert = TimePerMove;
+                passTurn();
                 //Tutaj trzeba wrzucić kod odpowiedzialny za zmianę tury!! maks
             }
         };
+        this.animationTimer = animationTimer;
+        animationTimer.stop();
         animationTimer.start();
     }
 }
