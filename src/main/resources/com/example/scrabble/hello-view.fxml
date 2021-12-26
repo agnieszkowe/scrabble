@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<Pane maxHeight="800.0" maxWidth="1000.0" minHeight="660.0" minWidth="1000.0" prefHeight="660.0" prefWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="800.0" maxWidth="1000.0" minHeight="660.0" minWidth="1000.0" prefHeight="660.0" prefWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <SplitPane layoutX="536.0" layoutY="429.0" prefHeight="189.0" prefWidth="441.0" style="-fx-background-color: white; -fx-border-color: black;">
          <items>
@@ -210,6 +214,16 @@
       <Label layoutX="559.0" layoutY="23.0" text="Scrabble" textFill="#5bd7a7">
          <font>
             <Font name="Bookman Old Style Bold Italic" size="80.0" />
+         </font>
+      </Label>
+      <Label layoutX="774.0" layoutY="138.0" text="Time left:" textFill="WHITE">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="862.0" layoutY="138.0" textFill="WHITE">
+         <font>
+            <Font size="20.0" />
          </font>
       </Label>
    </children>

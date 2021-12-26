@@ -530,10 +530,11 @@ public class HelloApplication extends Application {
     public void createScoreboard(){
         //Do zmiany wygląd i pozycja!! maks
         Label timeLabel = new Label(TimePerMove.toString());
-        timeLabel.relocate(450,500);
+        timeLabel.relocate(862,138);
         timeLabel.setMinWidth(75);
         timeLabel.setMinHeight(30);
-        timeLabel.setStyle("-fx-border-color:grey; -fx-background-color: #babfbb; -fx-alignment: center");
+        timeLabel.setTextFill(Color.color(1, 1, 1));
+        timeLabel.setStyle( "-fx-font-size: 20;");
         int mine = -188;
         int minex = 6;
         Label scoreboard = new Label("Scoreboard");
