@@ -489,7 +489,6 @@ public class HelloApplication extends Application {
         }
 
         playerGameFields.clear();
-
         playerArrayList.remove(player);
         playerArrayList.add(player);
         this.player = playerArrayList.get(0);

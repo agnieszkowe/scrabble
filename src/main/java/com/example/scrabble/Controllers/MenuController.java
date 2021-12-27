@@ -33,6 +33,9 @@ public class MenuController {
     @FXML
     private Button exitButton;
 
+    @FXML
+    private Button statisticsButton;
+
 
 
     public void initialize() throws IOException {
@@ -79,6 +82,17 @@ public class MenuController {
                 e.printStackTrace();
             }
 
+        });
+
+        statisticsButton.setOnAction(event -> {
+            try {
+                root.getChildren().remove(mainMenu);
+                statistics = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/statistics.fxml")));
+                root.getChildren().add(statistics);
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         });
 
         exitButton.setOnAction(event -> {
