@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.effect.Glow?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
@@ -211,10 +212,13 @@
          </font>
       </Label>
       <Pane layoutX="607.0" layoutY="211.0" prefHeight="90.0" prefWidth="300.0" style="-fx-background-color: white;" />
-      <Label layoutX="559.0" layoutY="23.0" text="Scrabble" textFill="#5bd7a7">
+      <Label layoutX="559.0" layoutY="23.0" text="Scrabble" textFill="WHITE">
          <font>
             <Font name="Bookman Old Style Bold Italic" size="80.0" />
          </font>
+         <effect>
+            <Glow />
+         </effect>
       </Label>
       <Label layoutX="774.0" layoutY="138.0" text="Time left:" textFill="WHITE">
          <font>
