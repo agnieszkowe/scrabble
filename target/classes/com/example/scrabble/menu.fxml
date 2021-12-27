@@ -10,11 +10,11 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scrabble.Controllers.MenuController">
+<Pane xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scrabble.Controllers.MenuController">
    <children>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: black;">
+      <AnchorPane layoutY="-6.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: black;">
          <children>
-            <Button fx:id="newGameButton" layoutX="351.0" layoutY="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: black; -fx-border-color: #500000;" stylesheets="@../../../../../src/main/resources/com/example/scrabble/style.css" text="PLAY" textAlignment="CENTER" textFill="WHITE">
+            <Button fx:id="newGameButton" layoutX="351.0" layoutY="174.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: black; -fx-border-color: #500000;" text="PLAY" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Century" size="20.0" />
                </font>
@@ -22,7 +22,7 @@
                   <Glow />
                </effect>
             </Button>
-            <Button fx:id="optionsButton" layoutX="351.0" layoutY="300.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: black; -fx-border-color: #500000;" text="OPTIONS" textFill="WHITE">
+            <Button fx:id="optionsButton" layoutX="351.0" layoutY="261.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: black; -fx-border-color: #500000;" text="OPTIONS" textFill="WHITE">
                <font>
                   <Font name="Century" size="20.0" />
                </font>
@@ -30,14 +30,14 @@
                   <Glow />
                </effect>
             </Button>
-            <Button fx:id="loginButton" layoutX="351.0" layoutY="400.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: black; -fx-border-color: #500000;" text="LOGIN" textFill="WHITE">
+            <Button fx:id="loginButton" layoutX="349.0" layoutY="345.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: black; -fx-border-color: #500000;" text="LOGIN" textFill="WHITE">
                <font>
                   <Font name="Century" size="20.0" />
                </font>
                <effect>
                   <Glow />
                </effect></Button>
-            <Button fx:id="createAccButton" layoutX="351.0" layoutY="500.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: black; -fx-border-color: #500000;" text="CREATE ACCOUNT" textFill="WHITE">
+            <Button fx:id="createAccButton" layoutX="351.0" layoutY="430.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: black; -fx-border-color: #500000;" text="CREATE ACCOUNT" textFill="WHITE">
                <font>
                   <Font name="Century" size="20.0" />
                </font>
@@ -45,7 +45,7 @@
                   <Glow />
                </effect>
             </Button>
-            <Button fx:id="exitButton" layoutX="351.0" layoutY="600.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: black; -fx-border-color: #500000;" text="EXIT" textFill="WHITE">
+            <Button fx:id="exitButton" layoutX="351.0" layoutY="599.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: black; -fx-border-color: #500000;" text="EXIT" textFill="WHITE">
                <font>
                   <Font name="Century" size="20.0" />
                </font>
@@ -53,7 +53,16 @@
                   <Glow />
                </effect>
             </Button>
-            <Label layoutX="317.0" layoutY="44.0" text="Scrabble" textFill="WHITE">
+            <Button fx:id="statisticsButton" layoutX="351.0" layoutY="513.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: black; -fx-border-color: #500000;" text="STATISTICS" textFill="WHITE">
+               <font>
+                  <Font name="Century" size="20.0" />
+               </font>
+               <effect>
+                  <Glow />
+               </effect>
+            </Button>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#500000" height="110.0" layoutX="-5.0" layoutY="698.0" stroke="BLACK" strokeType="INSIDE" width="1006.0" />
+            <Label layoutX="318.0" layoutY="51.0" text="Scrabble" textFill="WHITE">
                <font>
                   <Font name="Bookman Old Style Bold Italic" size="80.0" />
                </font>
@@ -65,7 +74,6 @@
                   </DropShadow>
                </effect>
             </Label>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#500000" height="110.0" layoutX="-2.0" layoutY="696.0" stroke="BLACK" strokeType="INSIDE" width="1006.0" />
          </children>
       </AnchorPane>
    </children>
