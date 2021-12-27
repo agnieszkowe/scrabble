@@ -5,13 +5,20 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import javax.imageio.ImageIO;
+import java.awt.image.RenderedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -201,7 +208,9 @@ public class HelloApplication extends Application {
             playerGameFields.clear();
         }
     }
+    public void takeS() throws IOException {
 
+    }
     private void setLettersOfPlayer(ArrayList<Letter> letters){
         int counter = 0;
         for (Letter letter:letters) {
