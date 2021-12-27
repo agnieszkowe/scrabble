@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="800.0" maxWidth="1000.0" minHeight="660.0" minWidth="1000.0" prefHeight="660.0" prefWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="800.0" maxWidth="1000.0" minHeight="660.0" minWidth="1000.0" prefHeight="660.0" prefWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <SplitPane layoutX="536.0" layoutY="429.0" prefHeight="189.0" prefWidth="441.0" style="-fx-background-color: white; -fx-border-color: black;">
          <items>
