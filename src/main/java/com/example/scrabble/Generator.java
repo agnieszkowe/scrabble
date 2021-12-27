@@ -116,8 +116,8 @@ public class Generator {
         for (int i = 0; i < 4; i++) {
             letterArrayList.add(new Letter("L",1));
             letterArrayList.add(new Letter("S",1));
-            letterArrayList.add(new Letter("U",1));
-            letterArrayList.add(new Letter("D",2));
+            //letterArrayList.add(new Letter("U",1));
+            //letterArrayList.add(new Letter("D",2));
         }
         for (int i = 0; i < 3; i++) {
             letterArrayList.add(new Letter("G",2));

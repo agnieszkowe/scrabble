@@ -18,8 +18,11 @@ public class Menu extends Application {
     static public Pane createAcc;
     static public Pane login;
     static public Pane results;
+    static public Pane statistics;
     static public ObservableList<String> observablePlayerList;
+
     @Override
+
     public void start(Stage primaryStage) throws Exception {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/mainFrame.fxml")));
         mainMenu = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/menu.fxml")));

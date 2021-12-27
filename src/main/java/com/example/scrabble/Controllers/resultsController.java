@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import com.example.scrabble.HelloApplication;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.security.Key;
@@ -145,14 +146,13 @@ public class resultsController {
         updateStatistics();
 
         goBackButton.setOnAction(event -> {
-
+            Stage stage = (Stage) goBackButton.getScene().getWindow();
+            Menu menu = new Menu();
             try {
-                // Tak żeby wrócić do mainMenu
-
+                menu.start(stage);
             }catch (Exception e){
                 e.printStackTrace();
             }
-
         });
 
     }
