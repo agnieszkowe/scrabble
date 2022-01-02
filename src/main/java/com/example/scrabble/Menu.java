@@ -19,6 +19,7 @@ public class Menu extends Application {
     static public Pane login;
     static public Pane results;
     static public Pane statistics;
+    static public Pane lastGame;
     static public ObservableList<String> observablePlayerList;
 
     @Override

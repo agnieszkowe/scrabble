@@ -690,9 +690,9 @@ public class HelloApplication extends Application {
         writer = new BufferedWriter((new OutputStreamWriter(
                 new FileOutputStream("src/main/resources/com/example/scrabble/gameHistory.txt", true), "UTF-8")));
         //writer.newLine();
-        writer.write(player.getName()+":");
+        writer.write(player.getName()+";");
         for (Field field:playerGameFields) {
-            writer.write(field.getX()+":"+field.getY()+":"+String.valueOf(field.getButton().getText())+";");
+            writer.write(field.getX()+";"+field.getY()+";"+String.valueOf(field.getButton().getText())+";");
         }
         writer.write(String.valueOf(pointsFinal)+";");
         writer.newLine();

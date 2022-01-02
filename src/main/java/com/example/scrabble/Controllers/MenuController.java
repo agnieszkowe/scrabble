@@ -38,6 +38,8 @@ public class MenuController {
     @FXML
     private Button statisticsButton;
 
+    @FXML
+    private Button lastGameButton;
 
 
     public void initialize() throws IOException {
@@ -102,6 +104,17 @@ public class MenuController {
             try {
                 Platform.exit();
             } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        lastGameButton.setOnAction(event -> {
+            try {
+                root.getChildren().remove(mainMenu);
+                lastGame = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/lastGame.fxml")));
+                root.getChildren().add(lastGame);
+
+            }catch (Exception e){
                 e.printStackTrace();
             }
         });
