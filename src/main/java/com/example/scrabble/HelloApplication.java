@@ -183,12 +183,12 @@ public class HelloApplication extends Application {
                 }
             }
 
-            playerArrayList.remove(player);
-            playerArrayList.add(player);
-            this.player = playerArrayList.get(0);
-            playerName.setText((player.getName()));
-            setLettersOfPlayer(this.player.playersLetters);
-            activateLetterFields();
+            //playerArrayList.remove(player);
+            //playerArrayList.add(player);
+            //this.player = playerArrayList.get(0);
+            //playerName.setText((player.getName()));
+            //setLettersOfPlayer(this.player.playersLetters);
+            //activateLetterFields();
             //calculateTime();
             animationTimer.stop();
             animationTimer.start();
@@ -688,7 +688,7 @@ public class HelloApplication extends Application {
     public void saveRound(Integer pointsFinal) throws IOException {
         BufferedWriter writer;
         writer = new BufferedWriter((new OutputStreamWriter(
-                new FileOutputStream("src/main/resources/com/example/scrabble/gameHistory.txt", true), "UTF-8")));
+                new FileOutputStream("src/main/resources/com/example/scrabble/gameHistory.txt", false), "UTF-8")));
         writer.newLine();
         writer.write(player.getName()+":");
         for (Field field:playerGameFields) {
