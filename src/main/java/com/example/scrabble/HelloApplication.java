@@ -5,22 +5,17 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.robot.Robot;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import javax.imageio.ImageIO;
-import java.awt.image.RenderedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static com.example.scrabble.Menu.*;
@@ -47,6 +42,7 @@ public class HelloApplication extends Application {
     private Timeline timeline;
     static public Integer TimePerMove;
     private AnimationTimer animationTimer;
+    private Integer snapCounter;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -73,6 +69,7 @@ public class HelloApplication extends Application {
         setLettersOfPlayer(player.playersLetters);
         playerName.setText((player.getName()));
 
+        snapCounter = 1;
         ifFirstTurn = true;
         thread = new Thread(new Runnable() {
             @Override
@@ -135,7 +132,11 @@ public class HelloApplication extends Application {
         }
 
         if (this.giveBackWord.isPressed()) {
-            nextTurnGenerator();
+            try {
+                nextTurnGenerator();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         setLetterFieldTouch();
         checkIfLetterInput();
@@ -150,12 +151,13 @@ public class HelloApplication extends Application {
     }
 
 
-    public void nextTurnGenerator(){
+    public void nextTurnGenerator() throws IOException {
         if (checkIfWordCorrectAfter()) {
             information.setText("");
             for (Field field : playerGameFields) {
                 field.isModified = true;
             }
+
 
             playerGameFields.clear();
             ArrayList<Letter> lettersToDelete = new ArrayList<>();
@@ -208,9 +210,7 @@ public class HelloApplication extends Application {
             playerGameFields.clear();
         }
     }
-    public void takeS() throws IOException {
 
-    }
     private void setLettersOfPlayer(ArrayList<Letter> letters){
         int counter = 0;
         for (Letter letter:letters) {
@@ -254,7 +254,7 @@ public class HelloApplication extends Application {
             }
         }
     }
-    private boolean checkIfWordCorrectAfter(){
+    private boolean checkIfWordCorrectAfter() throws IOException {
         if(playerGameFields.size()==0) {
             return false;
         } else {
@@ -464,6 +464,7 @@ public class HelloApplication extends Application {
                 current_points += pointsFinal;
                 player4Points.setText(Integer.toString(current_points));
             }
+            saveRound(pointsFinal);
             System.out.println(word);
             return true;
         }
@@ -683,4 +684,19 @@ public class HelloApplication extends Application {
         animationTimer.stop();
         animationTimer.start();
     }
+
+    public void saveRound(Integer pointsFinal) throws IOException {
+        BufferedWriter writer;
+        writer = new BufferedWriter((new OutputStreamWriter(
+                new FileOutputStream("src/main/resources/com/example/scrabble/gameHistory.txt", true), "UTF-8")));
+        writer.newLine();
+        writer.write(player.getName()+":");
+        for (Field field:playerGameFields) {
+            writer.write(field.getX()+":"+field.getY()+":"+String.valueOf(field.getButton().getText())+";");
+        }
+        writer.write(String.valueOf(pointsFinal)+";");
+        writer.close();
+
+    }
+
 }
