@@ -10,7 +10,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Objects;
 
 import static com.example.scrabble.Menu.*;
@@ -41,6 +43,7 @@ public class MenuController {
     public void initialize() throws IOException {
         newGameButton.setOnAction(event -> {
             HelloApplication helloApplication = new HelloApplication();
+            clearHistory();
             Stage stage = (Stage) newGameButton.getScene().getWindow();
             try {
                 helloApplication.start(stage);
@@ -103,6 +106,14 @@ public class MenuController {
             }
         });
 
-
+    }
+    public void clearHistory(){
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter("src/main/resources/com/example/scrabble/gameHistory.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        pw.close();
     }
 }
