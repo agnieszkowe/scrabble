@@ -38,5 +38,10 @@
             <Font name="Century" size="20.0" />
          </font>
       </Button>
+      <Button fx:id="previousMoveButton" layoutX="560.0" layoutY="244.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="173.0" style="-fx-background-color: black; -fx-border-color: #500000;" text="Previous Move" textFill="WHITE">
+         <font>
+            <Font name="Century" size="20.0" />
+         </font>
+      </Button>
     </children>
 </Pane>
