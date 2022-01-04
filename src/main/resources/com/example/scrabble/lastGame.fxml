@@ -6,7 +6,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scrabble.Controllers.lastGameController">
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scrabble.Controllers.lastGameController">
     <children>
         <Label fx:id="playerNameLabel" contentDisplay="CENTER" layoutX="638.0" layoutY="96.0" prefHeight="55.0" prefWidth="217.0" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP">
             <font>
@@ -43,5 +43,10 @@
             <Font name="Century" size="20.0" />
          </font>
       </Button>
+      <Label fx:id="noGameInfo" layoutX="67.0" layoutY="369.0" prefHeight="25.0" prefWidth="487.0" text="No recent game history found. Be sure to play one." textFill="WHITE">
+         <font>
+            <Font name="Century" size="20.0" />
+         </font>
+      </Label>
     </children>
 </Pane>

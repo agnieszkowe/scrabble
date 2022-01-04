@@ -30,27 +30,34 @@ public class lastGameController {
     private Button goBackButton;
     @FXML
     private Button previousMoveButton;
+    @FXML
+    private Label noGameInfo;
 
     public void initialize() throws IOException {
-        Generator generator = new Generator();
-        fieldArrayList = generator.mapGenerator(mainPane);
+        noGameInfo.setVisible(false);
         readFile();
-        previousMoveButton.setDisable(true);
+        System.out.println(fileLength);
+        if(this.fileLength==0){
+            noGameInfo.setVisible(true);
+        } else {
+            Generator generator = new Generator();
+            fieldArrayList = generator.mapGenerator(mainPane);
+            previousMoveButton.setDisable(true);
 
-        nextMoveButton.setOnAction(event -> {
-            nextMove();
-        });
+            nextMoveButton.setOnAction(event -> {
+                nextMove();
+            });
 
-        previousMoveButton.setOnAction(event -> {
-            previousMove();
-        });
+            previousMoveButton.setOnAction(event -> {
+                previousMove();
+            });
 
+        }
         goBackButton.setOnAction(event -> {
-
             try {
                 root.getChildren().remove(lastGame);
                 root.getChildren().add(mainMenu);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -77,7 +84,6 @@ public class lastGameController {
             }
             file.add(line);
         }
-
         this.file = file;
         this.fileLength = file.size();
     }
