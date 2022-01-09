@@ -30,6 +30,7 @@ public class HelloApplication extends Application {
     static public ArrayList<String> playerNicknamesArrayList = new ArrayList<>();
     public ArrayList<LetterField> letterFieldArrayList = new ArrayList<>();
     public ArrayList<Field> playerGameFields = new ArrayList<>();
+    public ArrayList<String> botsArrayList = new ArrayList<>();
     public Player player;
     private ArrayList<Player> playersOut = new ArrayList<>();
     private Button giveBackWord, passTurn, surrender;
@@ -63,6 +64,9 @@ public class HelloApplication extends Application {
 //        playerArrayList.add(new Player("Dawid",generator.PlayerLetterRandom(letterArrayList)));
         for (String s:playerNicknamesArrayList) {
             playerArrayList.add(new Player(s,generator.PlayerLetterRandom(letterArrayList)));
+            if(s.startsWith("Bot ")){
+                botsArrayList.add(s);
+            }
         }
         setNamesOfPlayers();
         player = playerArrayList.get(0);
@@ -85,31 +89,11 @@ public class HelloApplication extends Application {
     }
 
     private void gameLoop() {
-        //System.out.println("siema");
-        /*
-        if(player.playersLetters.size() == 0){
-            if(!playersOut.contains(player)){
-                playersOut.add(player);
-            }
-            if(playersOut.size() == playerArrayList.size()){
-                try {
-                    root.getChildren().remove(root);
-                    results = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/results.fxml")));
-                    root.getChildren().add(results);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-            passTurn();
-
-
-        }*/
         if(player.playersLetters.size()==0){
             if(!playersOut.contains(player)){
                 playersOut.add(player);
             }
             if(playersOut.size()==playerArrayList.size()){
-                //System.out.println("KONIEC");
                 try {
 
                     //ogarnij sobie funkcję
@@ -126,31 +110,280 @@ public class HelloApplication extends Application {
                 passTurn();
             }
         }
+/*
+        if(botsArrayList.contains(this.player.getName())){
+            if(ifFirstTurn){
 
-        if(passTurn.isPressed()){
-            passTurn();
-        }
-
-        if (this.giveBackWord.isPressed()) {
-            try {
-                nextTurnGenerator();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
+                if(insertWord()){
+                    passTurn();
+                }
             }
+
+        } else {
+*/
+            if (passTurn.isPressed()) {
+                passTurn();
+            }
+
+            if (this.giveBackWord.isPressed()) {
+                try {
+                    nextTurnGenerator();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            setLetterFieldTouch();
+            checkIfLetterInput();
         }
-        setLetterFieldTouch();
-        checkIfLetterInput();
-    }
+
 
     public static void main(String[] args) {
         launch();
     }
 
+    public boolean insertWord(){
+        ArrayList<String> currentLetters = new ArrayList<>();
+        for(LetterField letterField : letterFieldArrayList){
+            currentLetters.add(letterField.letter.getLetter());
+        }
+
+        for(Field field : fieldArrayList){
+            if(field.isModified){
+                if(createWord(field,currentLetters,5)){
+                    System.out.println("GIT");
+                    break;
+                } else {
+                    passTurn();
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public boolean createWord(Field field, ArrayList<String> letters, int limit){
+        double mainX = field.getX();
+        double mainY = field.getY();
+        ArrayList<String> currWordArray = letters;
+        try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/com/example/scrabble/dictionary.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.length() <= limit){
+                    ArrayList<String> dictWord = new ArrayList<>();
+                    for(int i=0;i<line.length();i++){
+                        dictWord.add(String.valueOf(line.charAt(i)));
+                    }
+                    int index = 0;
+                    if(dictWord.contains(field.button.getText())) {
+                        index = dictWord.indexOf(field.button.getText());
+                        dictWord.remove(field.button.getText());
+                    }
+                    if(currWordArray.containsAll(dictWord)){
+                        dictWord.add(index,field.button.getText());
+                        int insertedLetters = 0;
+                        boolean isHorizontal = false;
+                        boolean isVertical = false;
+                        if(index > 0 && index < dictWord.size()-1){
+                            double localX = mainX;
+                            double localY = mainY;
+                            for(int i=index-1;i>=0;i--){
+                                String letter = dictWord.get(i);
+                                Field prevFieldHorizontal = getByXY(fieldArrayList, localX - 30,localY, false);
+                                if(prevFieldHorizontal != null){
+                                    prevFieldHorizontal.button.setText(letter);
+                                    prevFieldHorizontal.isModified = true;
+                                    localX -= 30;
+                                    insertedLetters++;
+                                    isHorizontal = true;
+                                } else {
+                                    Field prevFieldVertical = getByXY(fieldArrayList, localX ,localY -30, false);
+                                    if(prevFieldVertical != null && !isHorizontal) {
+                                        prevFieldVertical.button.setText(letter);
+                                        prevFieldVertical.isModified = true;
+                                        localY -= 30;
+                                        insertedLetters++;
+                                        isVertical = true;
+                                    }
+                                }
+                            }
+                            double localX2 = mainX;
+                            double localY2 = mainY;
+                            for(int i=index+1;i <= dictWord.size()-1;i++){
+                                String letter = dictWord.get(i);
+                                Field nextFieldHorizontal = getByXY(fieldArrayList, localX2 + 30,localY2, false);
+                                if(nextFieldHorizontal != null && !isVertical){
+                                    nextFieldHorizontal.button.setText(letter);
+                                    nextFieldHorizontal.isModified = true;
+                                    localX2 += 30;
+                                    insertedLetters++;
+                                } else {
+                                    Field nextFieldVertical = getByXY(fieldArrayList, localX2,localY2+30, false);
+                                    if(nextFieldVertical != null && !isHorizontal) {
+                                        nextFieldVertical.button.setText(letter);
+                                        nextFieldVertical.isModified = true;
+                                        localY2 += 30;
+                                        insertedLetters++;
+                                    }
+                                }
+                            }
+                            if(insertedLetters == dictWord.size()-1){
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private void endGame(){
         timeline.stop();
     }
+    /*
+    public boolean insertWord(int limit){
+        StringBuilder currentWord = new StringBuilder();
+        for(LetterField letterField : letterFieldArrayList){
+            currentWord.append(letterField.letter.getLetter());
+        }
 
+        ArrayList<String> currWordArray = new ArrayList<>();
+        for(int i=0;i<currentWord.length();i++){
+            currWordArray.add(String.valueOf(currentWord.charAt(i)));
+        }
 
+        try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/com/example/scrabble/dictionary.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.length() <= limit){
+                    ArrayList<String> dictWord = new ArrayList<>();
+                    for(int i=0;i<line.length();i++){
+                        dictWord.add(String.valueOf(line.charAt(i)));
+                    }
+                    if(currWordArray.containsAll(dictWord)){
+                        if(findPlace(currentWord.toString(),line)){
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public boolean findPlace(String currentWord, String dictWord){
+        boolean success = false;
+        ArrayList<String> dictWordArray = new ArrayList<>();
+        for(int i=0;i<dictWord.length();i++){
+            dictWordArray.add(String.valueOf(dictWord.charAt(i)));
+        }
+        ArrayList<String> curWordArray = new ArrayList<>();
+        for(int i=0;i<currentWord.length();i++){
+            curWordArray.add(String.valueOf(currentWord.charAt(i)));
+        }
+        for(Field field : fieldArrayList){
+            if(curWordArray.contains(field.button.getText())){
+                double mainX = field.getX();
+                double mainY = field.getY();
+
+                int counter = 1;
+                for(int i=0; i < dictWord.length(); i++){
+                    if(String.valueOf(dictWord.charAt(i)).equals(field.button.getText())){
+                        counter++;
+                    }
+                }
+                int index = dictWord.indexOf(field.button.getText());
+                for(int i = 0; i < counter; i++){
+                    if(index > 0 && index < dictWord.length()-1){
+                        double localX = mainX;
+                        double localY = mainY;
+                        for(int j = index-1; j >=0; j--){
+                            String letter = String.valueOf(dictWord.charAt(j));
+                            for(Field field2 : fieldArrayList){
+                                if(field2.getX() == localX-30 && field2.getY() == mainY && !field2.isModified and check collision){
+                                    field2.button.setText(letter);
+                                    localX-=30;
+                                    success = true;
+                                } else if (field2.getY() == localY-30 && field2.getX() == mainX && !field2.isModified){
+                                    field2.button.setText(letter);
+                                    localY-=30;
+                                    success = true;
+                                }
+                            }
+                        }
+                        double localX2 = mainX;
+                        double localY2 = mainY;
+                        for(int j = index + 1; j <= dictWord.length(); j++){
+                            String letter = String.valueOf(dictWord.charAt(j));
+                            for(Field field2 : fieldArrayList){
+                                if(field2.getX() == localX2+30 && field2.getY() == mainY && !field2.isModified and check collision){
+                                    field2.button.setText(letter);
+                                    localX2 += 30;
+                                    success = true;
+                                } else if (field2.getY() == localY2+30 && field2.getX() == mainX && !field2.isModified){
+                                    field2.button.setText(letter);
+                                    localY+=30;
+                                    success = true;
+                                }
+                            }
+                        }
+
+                    } else if(index == 0){
+                        double localX3 = mainX;
+                        double localY3 = mainY;
+                        for(int j = index+1; j <= dictWord.length();j++){
+                            String letter = String.valueOf(dictWord.charAt(j));
+                            for(Field field2 : fieldArrayList){
+                                if(field2.getX() == localX3+30 && field2.getY() == mainY && !field2.isModified and check collision){
+                                    field2.button.setText(letter);
+                                    localX3 += 30;
+                                    success = true;
+                                } else if (field2.getY() == localY3+30 && field2.getX() == mainX && !field2.isModified){
+                                    field2.button.setText(letter);
+                                    localY3+=30;
+                                    success = true;
+                                }
+                            }
+                        }
+                    } else if(index == dictWord.length()-1){
+                        double localX4 = mainX;
+                        double localY4 = mainY;
+                        for(int j = index-1; j >=0; j--) {
+                            String letter = String.valueOf(dictWord.charAt(j));
+                            for (Field field2 : fieldArrayList) {
+                                if (field2.getX() == localX4 - 30 && field2.getY()==mainY && !field2.isModified and check collision) {
+                                    field2.button.setText(letter);
+                                    localX4 -= 30;
+                                    success = true;
+                                } else if (field2.getY() == localY4 - 30 && field2.getX() == mainX && !field2.isModified) {
+                                    field2.button.setText(letter);
+                                    localY4 -= 30;
+                                    success = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return success;
+    }
+
+    public boolean isAnagram(String firstWord, String secondWord) {
+        char[] word1 = firstWord.replaceAll("[\\s]", "").toCharArray();
+        char[] word2 = secondWord.replaceAll("[\\s]", "").toCharArray();
+        Arrays.sort(word1);
+        Arrays.sort(word2);
+        return Arrays.equals(word1, word2);
+    }
+    */
     public void nextTurnGenerator() throws IOException {
         if (checkIfWordCorrectAfter()) {
             information.setText("");
