@@ -13,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.print.DocFlavor;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -89,11 +90,11 @@ public class HelloApplication extends Application {
     }
 
     private void gameLoop() {
-        if(player.playersLetters.size()==0){
-            if(!playersOut.contains(player)){
+        if (player.playersLetters.size() == 0) {
+            if (!playersOut.contains(player)) {
                 playersOut.add(player);
             }
-            if(playersOut.size()==playerArrayList.size()){
+            if (playersOut.size() == playerArrayList.size()) {
                 try {
 
                     //ogarnij sobie funkcję
@@ -103,25 +104,28 @@ public class HelloApplication extends Application {
                     stage.show();
                     //root.getChildren().add(results);
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
                 passTurn();
             }
         }
-/*
-        if(botsArrayList.contains(this.player.getName())){
-            if(ifFirstTurn){
+
+        if (botsArrayList.contains(this.player.getName())) {
+            if (ifFirstTurn) {
 
             } else {
-                if(insertWord()){
+                if (!insertWord()) {
                     passTurn();
+                } else {
+                    animationTimer.stop();
+                    animationTimer.start();
                 }
             }
 
         } else {
-*/
+
             if (passTurn.isPressed()) {
                 passTurn();
             }
@@ -136,6 +140,7 @@ public class HelloApplication extends Application {
             setLetterFieldTouch();
             checkIfLetterInput();
         }
+    }
 
 
     public static void main(String[] args) {
@@ -150,11 +155,26 @@ public class HelloApplication extends Application {
 
         for(Field field : fieldArrayList){
             if(field.isModified){
-                if(createWord(field,currentLetters,5)){
-                    System.out.println("GIT");
-                    break;
-                } else {
-                    passTurn();
+                if(hasColissions(field) == 0){
+                    if(createWord(field,currentLetters,5,0)){
+                        return true;
+                    } else {
+
+                    }
+                } else if(hasColissions(field) == 1){
+                    if(createWord(field,currentLetters,5,1)){
+                        return true;
+                    } else {
+
+                    }
+                } else if(hasColissions(field) == 2){
+                    if(createWord(field,currentLetters,5,2)){
+                        return true;
+                    } else {
+
+                    }
+                } else if(hasColissions(field) == 3){
+                    System.out.println("LOL");
                 }
             }
         }
@@ -162,83 +182,281 @@ public class HelloApplication extends Application {
         return true;
     }
 
-    public boolean createWord(Field field, ArrayList<String> letters, int limit){
+    public int hasColissions(Field field){
+        if(((getByXY(fieldArrayList, field.getX(), field.getY()-30, true) != null) || (getByXY(fieldArrayList,field.getX(), field.getY()+30, true)) != null) &&
+        (getByXY(fieldArrayList, field.getX()-30, field.getY(), true) != null) || (getByXY(fieldArrayList,field.getX()+30, field.getY(), true)) != null){
+            return 2;
+        } else if((getByXY(fieldArrayList, field.getX()-30, field.getY(), true) != null) || (getByXY(fieldArrayList,field.getX()+30, field.getY(), true)) != null){
+            return 0;//vertical
+        } else if((getByXY(fieldArrayList, field.getX(), field.getY()-30, true) != null) || (getByXY(fieldArrayList,field.getX(), field.getY()+30, true)) != null){
+            return 1; //horizontal;
+        }
+        return 3;
+    }
+
+    public boolean createWord(Field field, ArrayList<String> letters, int limit, int collisions) {
         double mainX = field.getX();
         double mainY = field.getY();
         ArrayList<String> currWordArray = letters;
         try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/com/example/scrabble/dictionary.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.length() <= limit){
+                if (line.length() <= limit) {
                     ArrayList<String> dictWord = new ArrayList<>();
-                    for(int i=0;i<line.length();i++){
+                    for (int i = 0; i < line.length(); i++) {
                         dictWord.add(String.valueOf(line.charAt(i)));
                     }
                     int index = 0;
-                    if(dictWord.contains(field.button.getText())) {
+                    if (dictWord.contains(field.button.getText())) {
                         index = dictWord.indexOf(field.button.getText());
                         dictWord.remove(field.button.getText());
                     }
-                    if(currWordArray.containsAll(dictWord)){
-                        dictWord.add(index,field.button.getText());
+                    if (currWordArray.containsAll(dictWord)) {
+                        dictWord.add(index, field.button.getText());
                         int insertedLetters = 0;
-                        boolean isHorizontal = false;
-                        boolean isVertical = false;
-                        if(index > 0 && index < dictWord.size()-1){
+                        ArrayList<Field> insertedFields = new ArrayList<>();
+                        if(collisions==0){
                             double localX = mainX;
                             double localY = mainY;
-                            for(int i=index-1;i>=0;i--){
-                                String letter = dictWord.get(i);
-                                Field prevFieldHorizontal = getByXY(fieldArrayList, localX - 30,localY, false);
-                                if(prevFieldHorizontal != null){
-                                    prevFieldHorizontal.button.setText(letter);
-                                    prevFieldHorizontal.isModified = true;
-                                    localX -= 30;
+                            if(index > 0 && index < dictWord.size()-1){
+                                for(int i=index-1; i>=0; i--){
+                                    String letter = dictWord.get(i);
+                                    Field toInsert = getByXY(fieldArrayList, localX, localY-30,false);
+                                    if(toInsert == null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    if(getByXY(fieldArrayList, toInsert.getX()-30, toInsert.getY(),true ) != null || getByXY(fieldArrayList, toInsert.getX()+30, toInsert.getY(),true ) != null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    insertedFields.add(toInsert);
+                                    toInsert.button.setText(letter);
+                                    toInsert.isModified=true;
+                                    toInsert.button.setDisable(true);
+                                    localY-=30;
                                     insertedLetters++;
-                                    isHorizontal = true;
-                                } else {
-                                    Field prevFieldVertical = getByXY(fieldArrayList, localX ,localY -30, false);
-                                    if(prevFieldVertical != null && !isHorizontal) {
-                                        prevFieldVertical.button.setText(letter);
-                                        prevFieldVertical.isModified = true;
-                                        localY -= 30;
-                                        insertedLetters++;
-                                        isVertical = true;
+                                }
+                                for(int i=index+1; i<dictWord.size()-1; i++){
+                                    String letter = dictWord.get(i);
+                                    Field toInsert = getByXY(fieldArrayList, localX, localY+30,false);
+                                    if(toInsert == null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    if(getByXY(fieldArrayList, toInsert.getX()-30, toInsert.getY(),true ) != null || getByXY(fieldArrayList, toInsert.getX()+30, toInsert.getY(),true ) != null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    insertedFields.add(toInsert);
+                                    toInsert.button.setText(letter);
+                                    toInsert.isModified=true;
+                                    toInsert.button.setDisable(true);
+                                    localY+=30;
+                                    insertedLetters++;
+                                }
+                            } else if(index == 0){
+                                for(int i=index+1; i<=dictWord.size()-1; i++){
+                                    String letter = dictWord.get(i);
+                                    Field toInsert = getByXY(fieldArrayList, localX, localY+30,false);
+                                    if(toInsert == null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    if(getByXY(fieldArrayList, toInsert.getX()-30, toInsert.getY(),true ) != null || getByXY(fieldArrayList, toInsert.getX()+30, toInsert.getY(),true ) != null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    insertedFields.add(toInsert);
+                                    toInsert.button.setText(letter);
+                                    toInsert.isModified=true;
+                                    toInsert.button.setDisable(true);
+                                    localY+=30;
+                                    insertedLetters++;
+                                }
+                            } else if(index == dictWord.size()-1){
+                                for(int i=index-1; i>=0; i--){
+                                    String letter = dictWord.get(i);
+                                    Field toInsert = getByXY(fieldArrayList, localX, localY-30,false);
+                                    if(toInsert == null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    if(getByXY(fieldArrayList, toInsert.getX()-30, toInsert.getY(),true ) != null || getByXY(fieldArrayList, toInsert.getX()+30, toInsert.getY(),true ) != null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    insertedFields.add(toInsert);
+                                    toInsert.button.setText(letter);
+                                    toInsert.isModified=true;
+                                    toInsert.button.setDisable(true);
+                                    localY-=30;
+                                    insertedLetters++;
+                                }
+                            }
+                        } else if(collisions==1){
+                            double localX = mainX;
+                            double localY = mainY;
+                            if(index > 0 && index < dictWord.size()-1){
+                                for(int i=index-1; i>=0; i--){
+                                    String letter = dictWord.get(i);
+                                    Field toInsert = getByXY(fieldArrayList, localX-30, localY,false);
+                                    if(toInsert == null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    if(getByXY(fieldArrayList, toInsert.getX(), toInsert.getY()+30,true ) != null || getByXY(fieldArrayList, toInsert.getX(), toInsert.getY()-30,true ) != null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    insertedFields.add(toInsert);
+                                    toInsert.button.setText(letter);
+                                    toInsert.isModified=true;
+                                    toInsert.button.setDisable(true);
+                                    localX-=30;
+                                    insertedLetters++;
+                                }
+                                for(int i=index+1; i<dictWord.size()-1; i++){
+                                    String letter = dictWord.get(i);
+                                    Field toInsert = getByXY(fieldArrayList, localX+30, localY,false);
+                                    if(toInsert == null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    if(getByXY(fieldArrayList, toInsert.getX(), toInsert.getY()+30,true ) != null || getByXY(fieldArrayList, toInsert.getX(), toInsert.getY()-30,true ) != null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    insertedFields.add(toInsert);
+                                    toInsert.button.setText(letter);
+                                    toInsert.isModified=true;
+                                    toInsert.button.setDisable(true);
+                                    localX+=30;
+                                    insertedLetters++;
+                                }
+                            } else if(index ==0){
+                                for(int i=index+1; i<=dictWord.size()-1; i++){
+                                    String letter = dictWord.get(i);
+                                    Field toInsert = getByXY(fieldArrayList, localX+30, localY,false);
+                                    if(toInsert == null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    if(getByXY(fieldArrayList, toInsert.getX(), toInsert.getY()+30,true ) != null || getByXY(fieldArrayList, toInsert.getX(), toInsert.getY()-30,true ) != null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    insertedFields.add(toInsert);
+                                    toInsert.button.setText(letter);
+                                    toInsert.isModified=true;
+                                    toInsert.button.setDisable(true);
+                                    localX+=30;
+                                    insertedLetters++;
+                                }
+                            } else if(index == dictWord.size()-1){
+                                for(int i=index-1; i>=0; i--){
+                                    String letter = dictWord.get(i);
+                                    Field toInsert = getByXY(fieldArrayList, localX-30, localY,false);
+                                    if(toInsert == null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    if(getByXY(fieldArrayList, toInsert.getX(), toInsert.getY()+30,true ) != null || getByXY(fieldArrayList, toInsert.getX(), toInsert.getY()-30,true ) != null){
+                                        deleteFields(insertedFields);
+                                        break;
+                                    }
+                                    insertedFields.add(toInsert);
+                                    toInsert.button.setText(letter);
+                                    toInsert.isModified=true;
+                                    toInsert.button.setDisable(true);
+                                    localX-=30;
+                                    insertedLetters++;
+                                }
+                            }
+                        } else if(collisions == 2){
+                            continue;
+                        }
+                        if(insertedLetters == dictWord.size()-1){
+                            boolean horizontal;
+                            Field fieldToDetermineDirection = insertedFields.get(0);
+                            if((getByXY(fieldArrayList,fieldToDetermineDirection.getX()-30,fieldToDetermineDirection.getY(),true) != null) || (getByXY(fieldArrayList,fieldToDetermineDirection.getX()+30,fieldToDetermineDirection.getY(),true) != null)) {
+                                horizontal = true;
+                            } else {
+                                horizontal = false;
+                            }
+
+                            ArrayList<Double> coords = new ArrayList<>();
+                            if(horizontal){
+                                for(Field field1: insertedFields){
+                                    coords.add(field1.getX());
+                                }
+                            } else {
+                                for(Field field1: insertedFields){
+                                    coords.add(field1.getY());
+                                }
+                            }
+
+                            Double minVal = Collections.min(coords);
+                            ArrayList<Field> existingWord = new ArrayList<>();
+                            if(horizontal){
+                                for(Double i = minVal; i <= 450.0; i+=30.0){
+                                    if(getByXY(fieldArrayList,i, field.getY(), true) != null){
+                                        existingWord.add(getByXY(fieldArrayList,i, field.getY(), true));
+                                    }
+                                }
+                            } else {
+                                for(Double i = minVal; i <= 450.0; i+=30.0){
+                                    if(getByXY(fieldArrayList,field.getX(), i, true) != null){
+                                        existingWord.add(getByXY(fieldArrayList,field.getX(), i, true));
                                     }
                                 }
                             }
-                            double localX2 = mainX;
-                            double localY2 = mainY;
-                            for(int i=index+1;i <= dictWord.size()-1;i++){
-                                String letter = dictWord.get(i);
-                                Field nextFieldHorizontal = getByXY(fieldArrayList, localX2 + 30,localY2, false);
-                                if(nextFieldHorizontal != null && !isVertical){
-                                    nextFieldHorizontal.button.setText(letter);
-                                    nextFieldHorizontal.isModified = true;
-                                    localX2 += 30;
-                                    insertedLetters++;
-                                } else {
-                                    Field nextFieldVertical = getByXY(fieldArrayList, localX2,localY2+30, false);
-                                    if(nextFieldVertical != null && !isHorizontal) {
-                                        nextFieldVertical.button.setText(letter);
-                                        nextFieldVertical.isModified = true;
-                                        localY2 += 30;
-                                        insertedLetters++;
-                                    }
+                            if(minVal > field.getX() && horizontal){
+                                existingWord.add(0,field);
+                            } else if(minVal > field.getY() && !horizontal){
+                                existingWord.add(0,field);
+                            }
+                            StringBuilder word = new StringBuilder();
+                            for(Field field1: existingWord){
+                                word.append(field1.button.getText());
+                            }
+                            System.out.println(word);
+
+                            // JAK JEST MIEJESCE TO WRZUCA LITERKE ALE NIE SPRAWDZA ZE DALEJ SA INNE I POROWNUJE DICT WORD JAKO TO KROTSZE, A SLOWO KTORE POWSTAJE JEST DLUZSZE :(
+                            // DODAC USUWANIE UZYTYCH LITER PRZEZ BOTA, LOSOWANIE NASTEPNYCH DLA NIEGO
+                            // DODAC PUNKTACJE I SAVE ROUND
+                            /*int pointsFinal, points = 0;
+                            int wordBonus = 1;
+                            for (Field field : existingWord) {
+                                if (field.getWordBonus() != 1) {
+                                    wordBonus = field.getWordBonus();
                                 }
+                                points += field.getLetterBonus() * field.getLetterPoints();
                             }
-                            if(insertedLetters == dictWord.size()-1){
-                                return true;
+                            if (wordBonus == 1) {
+                                pointsFinal = points;
+                            } else {
+                                pointsFinal = points * wordBonus;
                             }
+                            */
+                            return true;
                         }
                     }
                 }
             }
             return false;
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
         return false;
+    }
+
+    public void deleteFields(ArrayList<Field> fieldsToDelete){
+        for(Field field : fieldsToDelete){
+            field.button.setText("");
+            field.isModified = false;
+            field.button.setDisable(false);
+        }
     }
 
     private void endGame(){
