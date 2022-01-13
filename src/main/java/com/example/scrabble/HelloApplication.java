@@ -117,13 +117,16 @@ public class HelloApplication extends Application {
                 if(!firstTurnBot(5)){
                     passTurn();
                     ifFirstTurn = true;
+
+                } else {
+                    ifFirstTurn = false;
+
                 }
             } else {
                 setLettersOfPlayer(player.playersLetters);
                 if (!insertWord()) {
                     passTurn();
                 } else {
-                    //
                     ArrayList<Letter> lettersToDelete = new ArrayList<>();
 
                     for(Field field2 : playerGameFields){
@@ -192,22 +195,20 @@ public class HelloApplication extends Application {
                     }
                     if(checkLetters(currentLetters,dictWord)){
 
-
-                        for(Double i = 210.0; i <= 450.0; i+=30.0){
-                            Field field = getByXY(fieldArrayList,i,210.0,false);
+                        Double center = 210.0;
+                        for(int i=0; i< dictWord.size();i++){
+                            Field field = getByXY(fieldArrayList,center,210.0,false);
                             field.button.setDisable(true);
                             field.isModified=true;
-                            if(dictWord.size()>=1) {
-                                field.button.setText(dictWord.get(0));
-                            } else {
-                                break;// NAPRAWIC FIRST ROUND BY BOT
-                            }
+                            field.button.setText(dictWord.get(i));
+
                             for(LetterField letterField : letterFieldArrayList){
                                 if(letterField.letter.getLetter().equals(field.button.getText())){
                                     field.setLetterPoints(letterField.getLetterPoints());
                                     break;
                                 }
                             }
+                            center+=30.0;
                         }
                         return true;
                     }
@@ -537,7 +538,7 @@ public class HelloApplication extends Application {
                                 for(Field field1: existingWord){
                                     word.append(field1.button.getText());
                                 }
-                                System.out.println(word);
+                                //System.out.println(word);
 
 
                                 // DODAC USUWANIE UZYTYCH LITER PRZEZ BOTA, LOSOWANIE NASTEPNYCH DLA NIEGO

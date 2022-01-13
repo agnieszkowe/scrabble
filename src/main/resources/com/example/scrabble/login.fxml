@@ -43,7 +43,7 @@
          <effect>
             <Glow />
          </effect></Label>
-      <Label fx:id="infoLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="120.0" layoutY="151.0" prefHeight="30.0" prefWidth="719.0" textAlignment="CENTER" textFill="#389438" textOverrun="CLIP">
+      <Label fx:id="infoLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="141.0" layoutY="462.0" prefHeight="30.0" prefWidth="719.0" textAlignment="CENTER" textFill="#389438" textOverrun="CLIP">
          <font>
             <Font size="20.0" />
          </font>
