@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Objects;
 
+import static com.example.scrabble.HelloApplication.playerNicknamesArrayList;
 import static com.example.scrabble.Menu.*;
 
 public class MenuController {
@@ -41,22 +43,30 @@ public class MenuController {
     @FXML
     private Button lastGameButton;
 
+    @FXML
+    private Label remiderLabel;
+
 
     public void initialize() throws IOException {
         newGameButton.setOnAction(event -> {
-            HelloApplication helloApplication = new HelloApplication();
-            clearHistory();
-            Stage stage = (Stage) newGameButton.getScene().getWindow();
-            try {
-                helloApplication.start(stage);
-            }catch (Exception e){
-                e.printStackTrace();
+            if (!playerNicknamesArrayList.isEmpty()) {
+                HelloApplication helloApplication = new HelloApplication();
+                clearHistory();
+                Stage stage = (Stage) newGameButton.getScene().getWindow();
+                try {
+                    helloApplication.start(stage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                remiderLabel.setVisible(true);
             }
         });
 
         optionsButton.setOnAction(event -> {
             try {
                 root.getChildren().remove(mainMenu);
+                remiderLabel.setVisible(false);
                 options = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/options.fxml")));
                 root.getChildren().add(options);
             }catch (Exception e){

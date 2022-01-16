@@ -70,5 +70,10 @@
             <Glow />
          </effect></Label>
       <ComboBox fx:id="timeComboBox" layoutX="545.0" layoutY="462.0" prefWidth="150.0" />
+      <Label fx:id="infoLabel" layoutX="222.0" layoutY="736.0" prefHeight="25.0" prefWidth="517.0" text="You chose players and time. Now you are ready to play!" textFill="WHITE" visible="false">
+         <font>
+            <Font name="Century" size="20.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

@@ -82,6 +82,11 @@
                   <Glow />
                </effect>
             </Button>
+            <Label fx:id="remiderLabel" layoutX="310.0" layoutY="756.0" text="Remember to set options before the game" textAlignment="CENTER" textFill="WHITE" visible="false">
+               <font>
+                  <Font name="Century" size="20.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>

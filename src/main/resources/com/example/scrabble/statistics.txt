@@ -6,3 +6,4 @@ cas3;2;1;48
 player;0;0;0
 eee;0;0;0
 lolek;3;3;352
+maks;0;0;0
