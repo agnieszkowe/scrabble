@@ -107,7 +107,7 @@ public class resultsController {
                 }
             }
             for (String key : results.keySet()) {
-                if (results.get(key) == scores.get(scores.size()) - 4) {
+                if (results.get(key) == scores.get(scores.size() - 4)) {
                     fourth = key;
                     fourthPlayerPoints = scores.get(scores.size()-4);
                 }
@@ -187,7 +187,6 @@ public class resultsController {
             counter++;
         }
         scanner.close();
-        System.out.println(file);
         for(int i = 0; i < lines; i++){
             if((file[i][0].equals(winner))){
                 int games = Integer.parseInt(file[i][1]);

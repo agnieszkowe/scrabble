@@ -55,7 +55,7 @@ public class HelloApplication extends Application {
         stage.show();
         setGameboard();
         createScoreboard();
-        root.getChildren().addAll(giveBackWord,playerName,scoreboard,player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points,passTurn,surrender,information,timeLabel);
+        root.getChildren().addAll(giveBackWord,playerName,scoreboard,player1,player2,player3,player4,player1Points,player2Points,player3Points,player4Points,surrender,information,timeLabel);
         Generator generator = new Generator();
         fieldArrayList = generator.mapGenerator(root);
         letterFieldArrayList = generator.LetterFieldsGenerator(root);
@@ -158,10 +158,16 @@ public class HelloApplication extends Application {
             }
 
         } else {
-            if (passTurn.isPressed()) {
+            //if (passTurn.isPressed()) {
+            //    passTurn();
+            //}
+            if(playersOut.contains(player)){
                 passTurn();
             }
+            if(surrender.isPressed()){
+                playersOut.add(player);
 
+            }
             if (this.giveBackWord.isPressed()) {
                 try {
                     nextTurnGenerator();
@@ -194,14 +200,14 @@ public class HelloApplication extends Application {
                         dictWord.add(String.valueOf(line.charAt(i)));
                     }
                     if(checkLetters(currentLetters,dictWord)){
-
+                    ArrayList<Field> firstWord = new ArrayList<>();
                         Double center = 210.0;
                         for(int i=0; i< dictWord.size();i++){
                             Field field = getByXY(fieldArrayList,center,210.0,false);
                             field.button.setDisable(true);
                             field.isModified=true;
                             field.button.setText(dictWord.get(i));
-
+                            firstWord.add(field);
                             for(LetterField letterField : letterFieldArrayList){
                                 if(letterField.letter.getLetter().equals(field.button.getText())){
                                     field.setLetterPoints(letterField.getLetterPoints());
@@ -210,6 +216,40 @@ public class HelloApplication extends Application {
                             }
                             center+=30.0;
                         }
+                        int pointsFinal, points = 0;
+                        int wordBonus = 1;
+                        for (Field field2 : firstWord) {
+                            if (field2.getWordBonus() != 1) {
+                                wordBonus = field2.getWordBonus();
+                            }
+                            points += field2.getLetterBonus() * field2.getLetterPoints();
+                        }
+                        if (wordBonus == 1) {
+                            pointsFinal = points;
+                        } else {
+                            pointsFinal = points * wordBonus;
+                        }
+                        if (player1.getText().equals(player.getName())) {
+                            int current_points = Integer.parseInt(player1Points.getText());
+                            current_points += pointsFinal;
+                            player1Points.setText(Integer.toString(current_points));
+                        }
+                        if (player2.getText().equals(player.getName())) {
+                            int current_points = Integer.parseInt(player2Points.getText());
+                            current_points += pointsFinal;
+                            player2Points.setText(Integer.toString(current_points));
+                        }
+                        if (player3.getText().equals(player.getName())) {
+                            int current_points = Integer.parseInt(player3Points.getText());
+                            current_points += pointsFinal;
+                            player3Points.setText(Integer.toString(current_points));
+                        }
+                        if (player4.getText().equals(player.getName())) {
+                            int current_points = Integer.parseInt(player4Points.getText());
+                            current_points += pointsFinal;
+                            player4Points.setText(Integer.toString(current_points));
+                        }
+                        saveRound(pointsFinal);
                         return true;
                     }
 
@@ -541,8 +581,6 @@ public class HelloApplication extends Application {
                                 //System.out.println(word);
 
 
-                                // DODAC USUWANIE UZYTYCH LITER PRZEZ BOTA, LOSOWANIE NASTEPNYCH DLA NIEGO
-
                                 int pointsFinal, points = 0;
                                 int wordBonus = 1;
                                 for (Field field2 : existingWord) {
@@ -629,31 +667,6 @@ public class HelloApplication extends Application {
         timeline.stop();
     }
 
-    public boolean checkCollision(ArrayList<Field> playerGameFields){
-        boolean collisions = false;
-        for (Field field : playerGameFields) {
-            double x = field.button.getLayoutX();
-            double y = field.button.getLayoutY();
-            if ((getByXY(fieldArrayList, x, y - 30, true)) != null && (getByXY(fieldArrayList, x - 30, y, true) != null || getByXY(fieldArrayList, x + 30, y, true) != null)) {
-                collisions = true;
-            } else if ((getByXY(fieldArrayList, x, y + 30, true)) != null && (getByXY(fieldArrayList, x - 30, y, true) != null || getByXY(fieldArrayList, x + 30, y, true) != null)) {
-                collisions = true;
-            } else if ((getByXY(fieldArrayList, x - 30, y, true)) != null && (getByXY(fieldArrayList, x, y - 30, true) != null || getByXY(fieldArrayList, x, y + 30, true) != null)) {
-                collisions = true;
-            } else if ((getByXY(fieldArrayList, x + 30, y, true)) != null && (getByXY(fieldArrayList, x, y - 30, true) != null || getByXY(fieldArrayList, x, y + 30, true) != null)) {
-                collisions = true;
-            } else if ((getByXY(fieldArrayList, x + 30, y, true)) != null && (getByXYPlayerGame(playerGameFields, x, y - 30) != null || getByXYPlayerGame(playerGameFields, x, y + 30) != null)) {
-                collisions = true;
-            } else if ((getByXY(fieldArrayList, x - 30, y, true)) != null && (getByXYPlayerGame(playerGameFields, x, y - 30) != null || getByXYPlayerGame(playerGameFields, x, y + 30) != null)) {
-                collisions = true;
-            } else if ((getByXY(fieldArrayList, x, y - 30, true)) != null && (getByXYPlayerGame(playerGameFields, x - 30, y) != null || getByXYPlayerGame(playerGameFields, x + 30, y) != null)) {
-                collisions = true;
-            } else if ((getByXY(fieldArrayList, x, y + 30, true)) != null && (getByXYPlayerGame(playerGameFields, x - 30, y) != null || getByXYPlayerGame(playerGameFields, x + 30, y) != null)) {
-                collisions = true;
-            }
-        }
-        return collisions;
-    }
 
     public void nextTurnGenerator() throws IOException {
         if (checkIfWordCorrectAfter()) {
@@ -1145,10 +1158,10 @@ public class HelloApplication extends Application {
         giveBackWord.relocate(535,340);
         giveBackWord.setMinHeight(50);
         giveBackWord.setMinWidth(150);
-        passTurn = new Button("Pass my turn");
-        passTurn.relocate(700,340);
-        passTurn.setMinWidth(150);
-        passTurn.setMinHeight(50);
+        //passTurn = new Button("Pass my turn");
+        //passTurn.relocate(700,340);
+        //passTurn.setMinWidth(150);
+        //passTurn.setMinHeight(50);
         surrender = new Button("Give Up");
         surrender.relocate(865,340);
         surrender.setMinHeight(50);
