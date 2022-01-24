@@ -113,8 +113,21 @@ public class HelloApplication extends Application {
         }
 
         if (botsArrayList.contains(this.player.getName())) {
+            int limitMin=3;
+            int limitMax=5;
+            if(this.player.getName().equals("Bot Easy")){
+                limitMin = 3;
+                limitMax = 5;
+            } else if (this.player.getName().equals("Bot Medium")){
+                limitMin = 5;
+                limitMax = 7;
+            } else if (this.player.getName().equals("Bot Hard")) {
+                limitMin = 6;
+                limitMax = 12;
+            }
+
             if (ifFirstTurn) {
-                if(!firstTurnBot(5)){
+                if(!firstTurnBot(limitMin,limitMax)){
                     passTurn();
                     ifFirstTurn = true;
 
@@ -124,7 +137,7 @@ public class HelloApplication extends Application {
                 }
             } else {
                 setLettersOfPlayer(player.playersLetters);
-                if (!insertWord()) {
+                if (!insertWord(limitMin,limitMax)) {
                     passTurn();
                 } else {
                     ArrayList<Letter> lettersToDelete = new ArrayList<>();
@@ -185,7 +198,7 @@ public class HelloApplication extends Application {
         launch();
     }
 
-    public boolean firstTurnBot(int limit) {
+    public boolean firstTurnBot(int limitMin, int limitMax) {
         ArrayList<String> currentLetters = new ArrayList<>();
         for (LetterField letterField : letterFieldArrayList) {
             currentLetters.add(letterField.letter.getLetter());
@@ -194,7 +207,7 @@ public class HelloApplication extends Application {
         try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/com/example/scrabble/dictionary.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.length() <= limit && line.length() >= 3) {
+                if (line.length() <= limitMax && line.length() >= limitMin) {
                     ArrayList<String> dictWord = new ArrayList<>();
                     for (int i = 0; i < line.length(); i++) {
                         dictWord.add(String.valueOf(line.charAt(i)));
@@ -264,7 +277,7 @@ public class HelloApplication extends Application {
 
 
 
-    public boolean insertWord(){
+    public boolean insertWord(int limitMin, int limitMax){
         ArrayList<String> currentLetters = new ArrayList<>();
         for(LetterField letterField : letterFieldArrayList){
             currentLetters.add(letterField.letter.getLetter());
@@ -273,15 +286,15 @@ public class HelloApplication extends Application {
         for(Field field : fieldArrayList){
             if(field.isModified){
                 if(hasColissions(field) == 0){
-                    if(createWord(field,currentLetters,5,0)){
+                    if(createWord(field,currentLetters,limitMin, limitMax,0)){
                         return true;
                     }
                 } else if(hasColissions(field) == 1){
-                    if(createWord(field,currentLetters,5,1)){
+                    if(createWord(field,currentLetters,limitMin, limitMax,1)){
                         return true;
                     }
                 } else if(hasColissions(field) == 2){
-                    if(createWord(field,currentLetters,5,2)){
+                    if(createWord(field,currentLetters,limitMin, limitMax,2)){
                         return true;
                     }
                 } else if(hasColissions(field) == 3){
@@ -306,14 +319,14 @@ public class HelloApplication extends Application {
         return 3;
     }
 
-    public boolean createWord(Field field, ArrayList<String> letters, int limit, int collisions) {
+    public boolean createWord(Field field, ArrayList<String> letters, int limitMin, int limitMax, int collisions) {
         double mainX = field.getX();
         double mainY = field.getY();
         ArrayList<String> currWordArray = letters;
         try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/com/example/scrabble/dictionary.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.length() <= limit && line.length() >= 3) {
+                if (line.length() <= limitMax && line.length() >= limitMin) {
                     ArrayList<String> dictWord = new ArrayList<>();
                     for (int i = 0; i < line.length(); i++) {
                         dictWord.add(String.valueOf(line.charAt(i)));
@@ -343,7 +356,6 @@ public class HelloApplication extends Application {
                                             deleteFields(playerGameFields);
                                             break;
                                         }
-                                        playerGameFields.add(toInsert);
                                         toInsert.button.setText(letter);
                                         toInsert.isModified=true;
                                         toInsert.button.setDisable(true);
@@ -352,6 +364,7 @@ public class HelloApplication extends Application {
                                                 toInsert.setLetterPoints(letterField.getLetterPoints());
                                             }
                                         }
+                                        playerGameFields.add(toInsert);
                                         localY-=30;
                                         insertedLetters++;
                                     }
@@ -366,7 +379,6 @@ public class HelloApplication extends Application {
                                             deleteFields(playerGameFields);
                                             break;
                                         }
-                                        playerGameFields.add(toInsert);
                                         toInsert.button.setText(letter);
                                         toInsert.isModified=true;
                                         toInsert.button.setDisable(true);
@@ -375,6 +387,7 @@ public class HelloApplication extends Application {
                                                 toInsert.setLetterPoints(letterField.getLetterPoints());
                                             }
                                         }
+                                        playerGameFields.add(toInsert);
                                         localY+=30;
                                         insertedLetters++;
                                     }
@@ -390,7 +403,6 @@ public class HelloApplication extends Application {
                                             deleteFields(playerGameFields);
                                             break;
                                         }
-                                        playerGameFields.add(toInsert);
                                         toInsert.button.setText(letter);
                                         toInsert.isModified=true;
                                         toInsert.button.setDisable(true);
@@ -399,6 +411,7 @@ public class HelloApplication extends Application {
                                                 toInsert.setLetterPoints(letterField.getLetterPoints());
                                             }
                                         }
+                                        playerGameFields.add(toInsert);
                                         localY+=30;
                                         insertedLetters++;
                                     }
@@ -414,7 +427,6 @@ public class HelloApplication extends Application {
                                             deleteFields(playerGameFields);
                                             break;
                                         }
-                                        playerGameFields.add(toInsert);
                                         toInsert.button.setText(letter);
                                         toInsert.isModified=true;
                                         toInsert.button.setDisable(true);
@@ -423,6 +435,7 @@ public class HelloApplication extends Application {
                                                 toInsert.setLetterPoints(letterField.getLetterPoints());
                                             }
                                         }
+                                        playerGameFields.add(toInsert);
                                         localY-=30;
                                         insertedLetters++;
                                     }
@@ -442,7 +455,6 @@ public class HelloApplication extends Application {
                                             deleteFields(playerGameFields);
                                             break;
                                         }
-                                        playerGameFields.add(toInsert);
                                         toInsert.button.setText(letter);
                                         toInsert.isModified=true;
                                         toInsert.button.setDisable(true);
@@ -451,6 +463,7 @@ public class HelloApplication extends Application {
                                                 toInsert.setLetterPoints(letterField.getLetterPoints());
                                             }
                                         }
+                                        playerGameFields.add(toInsert);
                                         localX-=30;
                                         insertedLetters++;
                                     }
@@ -465,7 +478,6 @@ public class HelloApplication extends Application {
                                             deleteFields(playerGameFields);
                                             break;
                                         }
-                                        playerGameFields.add(toInsert);
                                         toInsert.button.setText(letter);
                                         toInsert.isModified=true;
                                         toInsert.button.setDisable(true);
@@ -474,6 +486,7 @@ public class HelloApplication extends Application {
                                                 toInsert.setLetterPoints(letterField.getLetterPoints());
                                             }
                                         }
+                                        playerGameFields.add(toInsert);
                                         localX+=30;
                                         insertedLetters++;
                                     }
@@ -489,7 +502,6 @@ public class HelloApplication extends Application {
                                             deleteFields(playerGameFields);
                                             break;
                                         }
-                                        playerGameFields.add(toInsert);
                                         toInsert.button.setText(letter);
                                         toInsert.isModified=true;
                                         toInsert.button.setDisable(true);
@@ -498,6 +510,7 @@ public class HelloApplication extends Application {
                                                 toInsert.setLetterPoints(letterField.getLetterPoints());
                                             }
                                         }
+                                        playerGameFields.add(toInsert);
                                         localX+=30;
                                         insertedLetters++;
                                     }
@@ -513,7 +526,6 @@ public class HelloApplication extends Application {
                                             deleteFields(playerGameFields);
                                             break;
                                         }
-                                        playerGameFields.add(toInsert);
                                         toInsert.button.setText(letter);
                                         toInsert.isModified=true;
                                         toInsert.button.setDisable(true);
@@ -522,6 +534,7 @@ public class HelloApplication extends Application {
                                                 toInsert.setLetterPoints(letterField.getLetterPoints());
                                             }
                                         }
+                                        playerGameFields.add(toInsert);
                                         localX-=30;
                                         insertedLetters++;
                                     }
@@ -578,8 +591,6 @@ public class HelloApplication extends Application {
                                 for(Field field1: existingWord){
                                     word.append(field1.button.getText());
                                 }
-                                //System.out.println(word);
-
 
                                 int pointsFinal, points = 0;
                                 int wordBonus = 1;
@@ -619,7 +630,7 @@ public class HelloApplication extends Application {
 
                                 return true;
 
-                    }
+                            }
 
                         }
                     }
