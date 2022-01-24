@@ -2,19 +2,12 @@ package com.example.scrabble.Controllers;
 
 import com.example.scrabble.Menu;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import com.example.scrabble.HelloApplication;
 import javafx.stage.Stage;
-
 import java.io.*;
-import java.security.Key;
 import java.util.*;
-
-import static com.example.scrabble.Menu.*;
-import static com.example.scrabble.Menu.results;
 
 public class resultsController {
     @FXML
@@ -55,9 +48,7 @@ public class resultsController {
     String fourth;
     int fourth_Points;
 
-
     public void initialize() throws IOException {
-
 
         HashMap<String,Integer> results = new HashMap<>();
         results.put(HelloApplication.player1.getText(),Integer.parseInt(HelloApplication.player1Points.getText()));

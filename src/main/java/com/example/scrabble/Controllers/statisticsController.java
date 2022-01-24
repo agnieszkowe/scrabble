@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -41,7 +40,6 @@ public class statisticsController {
         goBackButton.setOnAction(event -> {
             try {
                 root.getChildren().remove(statistics);
-                //options = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/options.fxml")));
                 root.getChildren().add(mainMenu);
             }catch (Exception e){
                 e.printStackTrace();

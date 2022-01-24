@@ -3,25 +3,16 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import javax.print.DocFlavor;
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-
 import static com.example.scrabble.Menu.*;
-
-
 
 public class HelloApplication extends Application {
 
@@ -51,7 +42,6 @@ public class HelloApplication extends Application {
         this.stage = stage;
         Pane root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/hello-view.fxml")));
         stage.setScene(new Scene(root));
-        //stage.setTitle("Hello!");
         stage.show();
         setGameboard();
         createScoreboard();
@@ -60,9 +50,7 @@ public class HelloApplication extends Application {
         fieldArrayList = generator.mapGenerator(root);
         letterFieldArrayList = generator.LetterFieldsGenerator(root);
         letterArrayList = generator.LetterGenerator();
-//        playerArrayList.add(new Player("Aga",generator.PlayerLetterRandom(letterArrayList)));
-//        playerArrayList.add(new Player("Maks",generator.PlayerLetterRandom(letterArrayList)));
-//        playerArrayList.add(new Player("Dawid",generator.PlayerLetterRandom(letterArrayList)));
+
         for (String s:playerNicknamesArrayList) {
             playerArrayList.add(new Player(s,generator.PlayerLetterRandom(letterArrayList)));
             if(s.startsWith("Bot ")){
@@ -96,13 +84,10 @@ public class HelloApplication extends Application {
             }
             if (playersOut.size() == playerArrayList.size() || (playerArrayList.size()- playersOut.size()==1)) {
                 try {
-
-                    //ogarnij sobie funkcję
                     endGame();
                     results = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/scrabble/results.fxml")));
                     stage.setScene(new Scene(results));
                     stage.show();
-                    //root.getChildren().add(results);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -122,7 +107,7 @@ public class HelloApplication extends Application {
                 limitMin = 5;
                 limitMax = 7;
             } else if (this.player.getName().equals("Bot Hard")) {
-                limitMin = 6;
+                limitMin = 5;
                 limitMax = 12;
             }
 
@@ -133,12 +118,14 @@ public class HelloApplication extends Application {
 
                 } else {
                     ifFirstTurn = false;
-
+                    passTurn();
                 }
             } else {
                 setLettersOfPlayer(player.playersLetters);
                 if (!insertWord(limitMin,limitMax)) {
                     passTurn();
+                    animationTimer.stop();
+                    animationTimer.start();
                 } else {
                     ArrayList<Letter> lettersToDelete = new ArrayList<>();
 
@@ -192,7 +179,6 @@ public class HelloApplication extends Application {
             checkIfLetterInput();
         }
     }
-
 
     public static void main(String[] args) {
         launch();
@@ -265,7 +251,6 @@ public class HelloApplication extends Application {
                         saveRound(pointsFinal);
                         return true;
                     }
-
                 }
             }
             return false;
@@ -274,8 +259,6 @@ public class HelloApplication extends Application {
         }
         return false;
     }
-
-
 
     public boolean insertWord(int limitMin, int limitMax){
         ArrayList<String> currentLetters = new ArrayList<>();
@@ -298,7 +281,6 @@ public class HelloApplication extends Application {
                         return true;
                     }
                 } else if(hasColissions(field) == 3){
-                    //System.out.println("LOL");
                 }
             }
         }
@@ -336,11 +318,10 @@ public class HelloApplication extends Application {
                         index = dictWord.indexOf(field.button.getText());
                         dictWord.remove(field.button.getText());
 
-                        //if (currWordArray.containsAll(dictWord)) {
                         if(checkLetters(currWordArray,dictWord)){
                             dictWord.add(index, field.button.getText());
                             int insertedLetters = 0;
-                            //ArrayList<Field> insertedFields = new ArrayList<>();
+
                             if(collisions==0){
                                 double localX = mainX;
                                 double localY = mainY;
@@ -598,7 +579,6 @@ public class HelloApplication extends Application {
                                     if (field2.getWordBonus() != 1) {
                                         wordBonus = field2.getWordBonus();
                                     }
-
                                     points += field2.getLetterBonus() * field2.getLetterPoints();
                                 }
                                 if (wordBonus == 1) {
@@ -627,11 +607,8 @@ public class HelloApplication extends Application {
                                     player4Points.setText(Integer.toString(current_points));
                                 }
                                 saveRound(pointsFinal);
-
                                 return true;
-
                             }
-
                         }
                     }
                 }
@@ -644,7 +621,6 @@ public class HelloApplication extends Application {
     }
 
     public boolean checkLetters(ArrayList<String> current, ArrayList<String> dictionary){
-        // sprawdzenie czy litery z dict zawieraja sie w letter poprawnie!!!!
         ArrayList<String> currentCopy = new ArrayList<>();
         ArrayList<String> dictionaryCopy = new ArrayList<>();
         for(String str: current){
@@ -658,7 +634,6 @@ public class HelloApplication extends Application {
 
         for(String letter : dictionaryCopy){
             currentCopy.remove(letter);
-
         }
         if(currentCopy.size() == currentLength-dictionaryLength) {
             return true;
@@ -678,14 +653,12 @@ public class HelloApplication extends Application {
         timeline.stop();
     }
 
-
     public void nextTurnGenerator() throws IOException {
         if (checkIfWordCorrectAfter()) {
             information.setText("");
             for (Field field : playerGameFields) {
                 field.isModified = true;
             }
-
 
             playerGameFields.clear();
             ArrayList<Letter> lettersToDelete = new ArrayList<>();
@@ -698,7 +671,6 @@ public class HelloApplication extends Application {
 
             for (Letter s : lettersToDelete) {
                 player.playersLetters.remove(s);
-                //letterFieldArrayList.remove(s);
             }
 
             Random random = new Random();
@@ -711,13 +683,6 @@ public class HelloApplication extends Application {
                 }
             }
 
-            //playerArrayList.remove(player);
-            //playerArrayList.add(player);
-            //this.player = playerArrayList.get(0);
-            //playerName.setText((player.getName()));
-            //setLettersOfPlayer(this.player.playersLetters);
-            //activateLetterFields();
-            //calculateTime();
             animationTimer.stop();
             animationTimer.start();
         } else {
@@ -953,9 +918,9 @@ public class HelloApplication extends Application {
                 }
             }
 
-//        if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
-//            return false;
-//        }
+        if ((checkWord(word.toString()) == false) || (!toReturnY && !toReturnX)){
+            return false;
+        }
 
             // counting points
             int pointsFinal, points = 0;
@@ -998,21 +963,6 @@ public class HelloApplication extends Application {
         }
 
     }
-    /*public boolean checkIfOutOfLetters(){
-        int playersWithoutLetters=0;
-        for (Player player : playerArrayList){
-            if(player.playersLetters.size() == 0){
-                playersWithoutLetters++;
-            }
-        }
-        if (playersWithoutLetters == playerArrayList.size()){
-            //end game
-            System.out.println("KUNIEC");
-            return true;
-        }
-        return false;
-    }
-    */
 
     public void passTurn(){
         for (Field field : playerGameFields) {
@@ -1050,13 +1000,12 @@ public class HelloApplication extends Application {
     }
 
     public void activateLetterFields(){
-        for (LetterField letterField:letterFieldArrayList) { // pogubiłem sie w letterfield/field/gamefield xD ale działa
+        for (LetterField letterField:letterFieldArrayList) {
             if(letterField.button.getText().equals("")){
                 letterField.button.setDisable(true);
             } else {
                 letterField.button.setDisable(false);
             }
-
         }
     }
 
@@ -1078,7 +1027,6 @@ public class HelloApplication extends Application {
         return null;
     }
     public void createScoreboard(){
-        //Do zmiany wygląd i pozycja!! maks
         Label timeLabel = new Label(TimePerMove.toString());
         timeLabel.relocate(862,138);
         timeLabel.setMinWidth(75);
@@ -1142,7 +1090,6 @@ public class HelloApplication extends Application {
         this.player4 = player4;
         this.player4Points = player4Points;
         this.timeLabel = timeLabel;
-
     }
 
     public void setNamesOfPlayers(){
@@ -1217,7 +1164,7 @@ public class HelloApplication extends Application {
         BufferedWriter writer;
         writer = new BufferedWriter((new OutputStreamWriter(
                 new FileOutputStream("src/main/resources/com/example/scrabble/gameHistory.txt", true), "UTF-8")));
-        //writer.newLine();
+
         writer.write(player.getName()+";");
         for (Field field:playerGameFields) {
             writer.write(field.getX()+";"+field.getY()+";"+String.valueOf(field.getButton().getText())+";");
@@ -1227,5 +1174,4 @@ public class HelloApplication extends Application {
         writer.close();
 
     }
-
 }

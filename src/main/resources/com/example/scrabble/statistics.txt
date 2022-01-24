@@ -5,6 +5,6 @@ cas2;3;3;73
 cas3;2;1;48
 player;0;0;0
 eee;0;0;0
-lolek;12;8;787
+lolek;15;9;881
 maks;0;0;0
 lolek2;2;1;262

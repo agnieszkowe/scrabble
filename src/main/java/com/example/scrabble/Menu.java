@@ -35,7 +35,6 @@ public class Menu extends Application {
         observablePlayerList.add("Bot Easy");
         observablePlayerList.add("Bot Medium");
         observablePlayerList.add("Bot Hard");
-        //observablePlayerList.add("Bot Duszan");
         observablePlayerList.add("");
     }
 }
